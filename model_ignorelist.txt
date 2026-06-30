@@ -1,0 +1,64 @@
+# Eine Zeile pro Pattern. fnmatch/Glob-Syntax.
+# Alles hier wird von list_available_models() ignoriert.
+# Ziel: textbasierte TI4-QA-Benchmarks schneller machen.
+# Stand jetzt bleiben für Google/Gemini nur diese 12 Modelle übrig:
+# - models/gemini-2.0-flash
+# - models/gemini-2.0-flash-lite
+# - models/gemini-2.5-flash
+# - models/gemini-2.5-flash-lite
+# - models/gemini-2.5-pro
+# - models/gemini-3-flash-preview
+# - models/gemini-3-pro-preview
+# - models/gemini-3.1-flash-lite
+# - models/gemini-3.1-pro-preview
+# - models/gemini-3.5-flash
+# - models/gemma-4-26b-a4b-it
+# - models/gemma-4-31b-it
+
+# Spezial-/nicht-Textmodelle
+models/aqa
+models/*embedding*
+models/imagen-*
+models/lyria-*
+models/veo-*
+
+# Audio / TTS / Live
+models/*audio*
+models/*tts*
+models/*live*
+
+# Bild / multimodale Spezialmodelle
+models/*image*
+models/nano-banana-pro-preview
+
+# Tool-/Agenten-/Robotics-Spezialmodelle
+models/*computer-use*
+models/*robotics*
+
+# Zusätzlich für die aktuelle Google-Shortlist deaktiviert
+models/antigravity-preview-05-2026
+models/deep-research-*
+models/gemini-2.0-flash-001
+models/gemini-2.0-flash-lite-001
+models/gemini-3.1-flash-lite-preview
+models/gemini-3.1-pro-preview-customtools
+models/gemini-flash-latest
+models/gemini-flash-lite-latest
+models/gemini-pro-latest
+
+# Ollama Cloud: per Probe als "requires a subscription" geblockt
+# Exakt aus den manuellen Resultaten übernommen, damit die Sweep-Liste kleiner bleibt.
+deepseek-v3.1:671b
+deepseek-v3.2
+deepseek-v4-flash
+deepseek-v4-pro
+gemini-3-flash-preview
+glm-5
+glm-5.1
+glm-5.2
+kimi-k2.5
+kimi-k2.6
+kimi-k2.7-code
+minimax-m2.7
+mistral-large-3:675b
+qwen3.5:397b
