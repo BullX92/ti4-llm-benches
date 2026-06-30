@@ -2,7 +2,7 @@
 
 ## Goal
 
-Reshape `evals/llm_bench` so each testcase has one canonical JSON artifact containing:
+Reshape the repo so each testcase has one canonical JSON artifact containing:
 - prompt
 - expected result / assertions
 - testcase metadata
@@ -35,7 +35,7 @@ The main change is a **view-model inversion**:
   - `GET /api/status`
   - `GET /api/testcases`
   - `POST /api/run`
-- `site/app.js`
+- `visualize/site/app.js`
   - already renders `last_run.report_summary`
   - already renders `matrix_results`
   - already reacts to API payloads
@@ -45,7 +45,7 @@ The main change is a **view-model inversion**:
 ### Directory layout
 
 ```text
-evals/llm_bench/
+testresults/
   testcase_results/
     manifest.json
     sol-flagship__<content_hash>.json

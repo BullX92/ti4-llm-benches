@@ -30,7 +30,7 @@ const statModels = document.getElementById('statModels');
 const statTestcases = document.getElementById('statTestcases');
 const statLastExit = document.getElementById('statLastExit');
 
-const cmd = '/opt/hermes/.venv/bin/python evals/llm_bench/server.py';
+const cmd = '/opt/hermes/.venv/bin/python testpipeline/server.py';
 const state = {
   providers: [],
   testcases: [],
@@ -96,7 +96,7 @@ function formatAssertionLabel(assertion = {}) {
 function formatSourcePath(sourcePath) {
   const value = String(sourcePath || '').trim();
   if (!value) return '';
-  const marker = '/evals/llm_bench/';
+  const marker = '/testpipeline/';
   const idx = value.indexOf(marker);
   return idx >= 0 ? value.slice(idx + 1) : value;
 }
@@ -173,7 +173,7 @@ function renderSummaryCards(runPayload) {
   reportSummary.innerHTML = '';
   const summary = runPayload.report_summary || {};
   const cards = [
-    ['Selected models', String(summary.selected_model_count ?? runPayload.selected_models?.length ?? 0)],
+    ['Discovered models', String(summary.selected_model_count ?? runPayload.selected_models?.length ?? 0)],
     ['Testcases', String(summary.testcase_count ?? runPayload.testcases?.length ?? 0)],
     ['Pass', String(summary.pass_count ?? 0)],
     ['Fail', String(summary.fail_count ?? 0)],
@@ -463,14 +463,14 @@ function renderProviderCard(provider) {
       </div>
     </div>
     <div class="selected-models">
-      <p class="muted">${provider.selected_models.length ? 'Saved shortlist from config' : 'No saved model selection yet'}</p>
+      <p class="muted">${provider.selected_models.length ? 'Saved legacy shortlist (optional)' : 'No saved shortlist — run uses all discovered models'}</p>
       ${provider.selected_models.length ? `<div class="chips">${provider.selected_models.map((name) => `<span class="chip">${escapeHtml(name)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="selected-models testcase-prompt-box">
       <p class="muted">Config-derived Promptfoo preview</p>
       <pre>${escapeHtml(JSON.stringify(configPreview, null, 2))}</pre>
     </div>
-    <div class="models-box" data-models-box="${provider.id}">Click “Load models” to fetch the available models from this config.</div>
+    <div class="models-box" data-models-box="${provider.id}">Click “Load models” to fetch the available models from this provider.</div>
     <div class="provider-footer">
       <button type="button" data-action="save-selection">Save selection</button>
       <span class="muted" data-provider-status="${provider.id}">${provider.selected_count ? `${provider.selected_count} chosen` : 'Ready'}</span>
@@ -697,7 +697,7 @@ async function refreshStatus() {
     reportMeta.textContent = 'Run the benchmark to generate a testcase/model matrix.';
     reportSummary.innerHTML = '';
     resultCards.innerHTML = '';
-    output.textContent = 'Add a config, select models, and save at least one testcase to start.';
+    output.textContent = 'Add a provider config and at least one testcase to start.';
   }
   setMessage(statusEl, 'Ready');
 }

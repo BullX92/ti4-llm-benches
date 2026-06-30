@@ -7,7 +7,8 @@ __pycache__/
 venv/
 *.sqlite3
 *.db
-runs_*/
-testcase_results/
 node_modules/
 .DS_Store
+
+testresults/testcase_results/
+testresults/runs/

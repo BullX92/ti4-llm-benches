@@ -51,14 +51,14 @@
             <p class="mini-label">Workflow</p>
             <ol class="workflow-list">
               <li>Add or refresh an Ollama-compatible provider config.</li>
-              <li>Load models and save the shortlist you want to benchmark.</li>
+              <li>Load models from each configured provider; the pipeline runs missing or invalid testcase/model combinations automatically.</li>
               <li>Define testcases with prompt + expected key/value results.</li>
               <li>Run the matrix; unchanged pairs are served from SQLite cache.</li>
             </ol>
           </div>
           <div class="mini-panel terminal-panel">
             <p class="mini-label">Server command</p>
-            <pre id="cmdPreview">/opt/hermes/.venv/bin/python evals/llm_bench/server.py</pre>
+            <pre id="cmdPreview">/opt/hermes/.venv/bin/python testpipeline/server.py</pre>
           </div>
         </aside>
       </section>
@@ -123,7 +123,7 @@
               <div id="assertionRows" class="assertion-rows"></div>
             </div>
             <p class="hint">
-              Use dot paths like <code>flagship.name</code> or leave key empty to match the full response text. Supported matchers: <code>equals</code>, <code>contains</code>, <code>icontains</code>, <code>regex</code>. YAML cases in <code>evals/llm_bench/testcases/</code> sync into the registry automatically.
+              Use dot paths like <code>flagship.name</code> or leave key empty to match the full response text. Supported matchers: <code>equals</code>, <code>contains</code>, <code>icontains</code>, <code>regex</code>. YAML cases in <code>testcases/</code> sync into the registry automatically.
             </p>
             <div class="buttons">
               <button type="submit">Save testcase</button>
@@ -141,7 +141,7 @@
               <p class="section-kicker">Model selection</p>
               <h2>3. Available configs and models</h2>
             </div>
-            <span class="hint">Fetch models from each config, then save the shortlist you actually want to benchmark.</span>
+            <span class="hint">Fetch available models from each configured provider. The pipeline benchmarks missing or invalid results automatically.</span>
           </div>
           <div id="providerList" class="provider-list"></div>
         </article>
@@ -193,7 +193,7 @@
           <div id="resultCards" class="result-cards"></div>
           <details class="raw-output">
             <summary>Raw Promptfoo output</summary>
-            <pre id="output">Add a config, select models, and save at least one testcase to start.</pre>
+            <pre id="output">Add a provider config and at least one testcase to start.</pre>
           </details>
         </article>
       </section>

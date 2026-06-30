@@ -21,11 +21,12 @@ from urllib.request import Request, urlopen
 import yaml
 
 ROOT = Path(__file__).resolve().parent
-SITE = ROOT / "site"
-TESTCASES_DIR = ROOT / "testcases"
-RESULTS_DIR = Path(os.environ.get("LLM_BENCH_RESULTS_DIR", str(ROOT / "testcase_results"))).expanduser()
-DB_PATH = Path(os.environ.get("LLM_BENCH_DB_PATH", str(ROOT / "llm_bench.sqlite3"))).expanduser()
-RUNS_DIR = Path(os.environ.get("LLM_BENCH_RUNS_DIR", str(ROOT / "runs"))).expanduser()
+REPO_ROOT = ROOT.parent
+SITE = REPO_ROOT / "visualize" / "site"
+TESTCASES_DIR = REPO_ROOT / "testcases"
+RESULTS_DIR = Path(os.environ.get("LLM_BENCH_RESULTS_DIR", str(REPO_ROOT / "testresults" / "testcase_results"))).expanduser()
+DB_PATH = Path(os.environ.get("LLM_BENCH_DB_PATH", str(REPO_ROOT / "testresults" / "llm_bench.sqlite3"))).expanduser()
+RUNS_DIR = Path(os.environ.get("LLM_BENCH_RUNS_DIR", str(REPO_ROOT / "testresults" / "runs"))).expanduser()
 LAST_RUN_PATH = Path(os.environ.get("LLM_BENCH_LAST_RUN_PATH", str(RUNS_DIR / "last_run.json"))).expanduser()
 PROMPTFOO_CMD = ["npx", "-y", "promptfoo@latest", "eval", "--config"]
 PORT = int(os.environ.get("PORT", "8642"))
@@ -621,6 +622,41 @@ def list_selected_models() -> list[dict]:
     ]
 
 
+def list_available_models(providers: list[dict] | None = None) -> list[dict]:
+    if providers is None:
+        with db_conn() as conn:
+            rows = conn.execute(
+                "SELECT id, name, provider_type, base_url, api_key FROM providers ORDER BY datetime(updated_at) DESC, id DESC"
+            ).fetchall()
+        provider_rows = [dict(row) for row in rows]
+    else:
+        provider_rows = providers
+    available: list[dict] = []
+    seen: set[tuple[int | None, str]] = set()
+    for provider in provider_rows:
+        model_names = remote_model_names(str(provider.get("base_url") or ""), str(provider.get("api_key") or ""))
+        for model_name in model_names:
+            normalized_model = str(model_name or "").strip()
+            if not normalized_model:
+                continue
+            dedupe_key = (provider.get("id"), normalized_model)
+            if dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+            available.append(
+                {
+                    "provider_id": provider.get("id"),
+                    "provider_name": str(provider.get("name") or ""),
+                    "provider_type": str(provider.get("provider_type") or DEFAULT_PROVIDER_TYPE),
+                    "base_url": str(provider.get("base_url") or ""),
+                    "api_key": str(provider.get("api_key") or ""),
+                    "model_name": normalized_model,
+                }
+            )
+    available.sort(key=lambda item: (str(item.get("provider_name") or "").lower(), str(item.get("model_name") or "").lower()))
+    return available
+
+
 def list_testcases() -> list[dict]:
     sync_yaml_testcases_to_db()
     source_map = yaml_testcase_source_map()
@@ -965,13 +1001,19 @@ def result_row_to_payload(row: sqlite3.Row) -> dict:
 def get_cached_case_results(execution_traces: list[str]) -> dict[str, dict]:
     if not execution_traces:
         return {}
-    placeholders = ",".join("?" for _ in execution_traces)
+    placeholders = ", ".join("?" for _ in execution_traces)
     with db_conn() as conn:
         rows = conn.execute(
             f"SELECT * FROM benchmark_case_results WHERE execution_trace IN ({placeholders})",
             execution_traces,
         ).fetchall()
     return {row["execution_trace"]: result_row_to_payload(row) for row in rows}
+
+
+def is_valid_cached_result(result: dict | None) -> bool:
+    if not isinstance(result, dict):
+        return False
+    return str(result.get("result_kind") or "").strip().lower() in {"pass", "fail"}
 
 
 def plan_benchmark_matrix(selected_models: list[dict], testcases: list[dict]) -> dict:
@@ -985,7 +1027,7 @@ def plan_benchmark_matrix(selected_models: list[dict], testcases: list[dict]) ->
         for testcase in testcases:
             execution_trace = compute_case_execution_trace(testcase, selected_model)
             cached = cached_map.get(execution_trace)
-            if cached is not None:
+            if cached is not None and is_valid_cached_result(cached):
                 cached_results.append(cached)
             else:
                 pending_cases.append(testcase)
@@ -1518,14 +1560,17 @@ class Handler(SimpleHTTPRequestHandler):
 
         if path == "/api/run":
             try:
-                selected = list_selected_models()
-                if not selected:
-                    raise ValueError("Select at least one model before running the benchmark")
+                providers = list_providers()
+                if not providers:
+                    raise ValueError("Add at least one provider before running the benchmark")
+                available_models = list_available_models()
+                if not available_models:
+                    raise ValueError("No models were returned by the configured providers")
                 testcases = list_testcases()
                 if not testcases:
                     raise ValueError("Create at least one testcase before running the benchmark")
 
-                plan = plan_benchmark_matrix(selected_models=selected, testcases=testcases)
+                plan = plan_benchmark_matrix(selected_models=available_models, testcases=testcases)
                 matrix_results = list(plan["cached_results"])
                 stdout_chunks: list[str] = []
                 stderr_chunks: list[str] = []
@@ -1556,10 +1601,10 @@ class Handler(SimpleHTTPRequestHandler):
 
                 run_state = "cached" if fresh_count == 0 else ("mixed" if plan["cached_count"] else "fresh")
                 payload = build_latest_run_payload(
-                    selected_models=selected,
+                    selected_models=available_models,
                     testcases=testcases,
                     matrix_results=matrix_results,
-                    stdout_chunks=stdout_chunks or [f"Served {plan['cached_count']} unchanged testcase/model combinations from SQLite cache."],
+                    stdout_chunks=stdout_chunks or [f"Served {plan['cached_count']} valid cached testcase/model results from SQLite."],
                     stderr_chunks=stderr_chunks,
                     exit_code=exit_code,
                     skipped_count=plan["cached_count"],

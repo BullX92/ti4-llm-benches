@@ -4,8 +4,8 @@ import json
 import sqlite3
 from pathlib import Path
 
-from evals.llm_bench import server as llm_bench_server
-from evals.llm_bench.server import (
+from testpipeline import server as llm_bench_server
+from testpipeline.server import (
     BENCHMARK_ASSERTIONS,
     BENCHMARK_PROMPT,
     BENCHMARK_QUESTION,
@@ -18,6 +18,8 @@ from evals.llm_bench.server import (
     extract_model_names,
     get_latest_run_payload,
     init_db,
+    is_valid_cached_result,
+    list_available_models,
     list_testcases,
     load_last_run,
     load_results_manifest,
@@ -174,6 +176,10 @@ def test_load_yaml_testcase_specs_generates_keyed_sol_prompt(tmp_path: Path) -> 
         llm_bench_server.DEFAULT_TESTCASE_FILE = original_file
 
 
+def test_testcases_dir_defaults_to_repo_toplevel() -> None:
+    assert llm_bench_server.TESTCASES_DIR == llm_bench_server.REPO_ROOT / "testcases"
+
+
 def test_list_testcases_includes_yaml_source_path(tmp_path: Path) -> None:
     original_db_path = llm_bench_server.DB_PATH
     original_dir = llm_bench_server.TESTCASES_DIR
@@ -306,6 +312,49 @@ def test_plan_benchmark_matrix_skips_cached_case_results(tmp_path: Path) -> None
         llm_bench_server.DB_PATH = original_db_path
 
 
+def test_plan_benchmark_matrix_reruns_invalid_cached_results(tmp_path: Path) -> None:
+    original_db_path = llm_bench_server.DB_PATH
+    try:
+        llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
+        init_db()
+        provider = upsert_provider("Remote Ollama", "https://ollama.example.com", "secret", provider_type="ollama")
+        save_selected_models(provider["id"], ["llama3.2"])
+        testcase = upsert_testcase(
+            name="Case A",
+            prompt_text="Prompt A",
+            assertions=[{"type": "contains", "value": "Alpha"}],
+        )
+
+        selected = llm_bench_server.list_selected_models()
+        trace = compute_case_execution_trace(testcase, selected[0])
+        cached = record_case_result(
+            testcase=testcase,
+            selected_model=selected[0],
+            execution_trace=trace,
+            result={
+                "provider": {"label": "Remote Ollama / llama3.2", "id": "openai:chat:llama3.2"},
+                "prompt": {"raw": "Prompt A"},
+                "response": {"output": ""},
+                "error": "API error: 500 internal server error",
+                "success": False,
+                "score": 0,
+                "latencyMs": 12,
+                "testCase": {"metadata": {"testcase_id": testcase["id"]}},
+            },
+            run_id=None,
+        )
+
+        assert cached["result_kind"] == "error"
+        assert is_valid_cached_result(cached) is False
+
+        plan = plan_benchmark_matrix(selected_models=selected, testcases=[testcase])
+        assert plan["cached_count"] == 0
+        assert plan["pending_count"] == 1
+        assert [item["id"] for item in plan["pending_by_model"][0]["testcases"]] == [testcase["id"]]
+    finally:
+        llm_bench_server.DB_PATH = original_db_path
+
+
 def test_record_case_result_is_available_from_latest_run_payload(tmp_path: Path) -> None:
     original_db_path = llm_bench_server.DB_PATH
     try:
@@ -398,3 +447,23 @@ def test_save_last_run_round_trips_payload(tmp_path: Path) -> None:
         assert load_last_run() == payload
     finally:
         llm_bench_server.LAST_RUN_PATH = original_last_run_path
+
+
+def test_list_available_models_expands_each_configured_provider(monkeypatch) -> None:
+    monkeypatch.setattr(
+        llm_bench_server,
+        "remote_model_names",
+        lambda base_url, api_key: ["alpha", "beta"] if "one" in base_url else ["gamma"],
+    )
+    providers = [
+        {"id": 1, "name": "Provider One", "provider_type": "openai", "base_url": "https://one.example.com/v1", "api_key": "k1"},
+        {"id": 2, "name": "Provider Two", "provider_type": "openai", "base_url": "https://two.example.com/v1", "api_key": "k2"},
+    ]
+
+    models = list_available_models(providers)
+
+    assert [(item["provider_name"], item["model_name"]) for item in models] == [
+        ("Provider One", "alpha"),
+        ("Provider One", "beta"),
+        ("Provider Two", "gamma"),
+    ]
