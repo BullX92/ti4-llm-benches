@@ -1,0 +1,50 @@
+{
+  "run_id": "sol-flagship-glm-5.2-2026-06-30T05:33:04Z",
+  "timestamp_utc": "2026-06-30T05:33:04Z",
+  "sequence_index": 7,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "glm-5.2",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 403,
+  "error": {
+    "type": "http_error",
+    "message": "HTTP Error 403: Forbidden",
+    "body": "{\"error\":\"this model requires a subscription, upgrade for access: https://ollama.com/upgrade (ref: 30130958-eb74-4866-a596-aa3fbcaf7db2)\"}\n"
+  },
+  "assessment": {
+    "verdict": "request-error",
+    "summary": "HTTP 403"
+  }
+}

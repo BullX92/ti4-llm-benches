@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-gpt-oss-120b-2026-06-30T05:35:58Z",
+  "timestamp_utc": "2026-06-30T05:35:58Z",
+  "sequence_index": 35,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "gpt-oss:120b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "**Federation of Sol \u2013 Flagship**\n\n| Item | Details |\n|------|---------|\n| **Name** | **Flagship \u2013 Dreadnought** |\n| **Type** | Flagship (counts as a **Ship** on the board) |\n| **Combat** | **5** |\n| **Move** | **2** (same as any other 2\u2011movement starship) |\n| **Capacity** | **2** (can carry up to two units the way a regular cruiser does) |\n| **Cost** | **12\u202fPIP** (the same as a standard Dreadnought\u2011class ship) |\n| **Special Ability \u2013 \u201cSolar Engine\u201d** | \u2022 While the Flagship Dreadnought is present in a space combat, **add +1 to every combat roll made by the Federation of Sol**. <br>\u2022 The flag\u2011ship\u2019s ability **does not stack** with other combat\u2011roll modifiers; it simply provides a flat +1 to each die you roll. <br>\u2022 If the flag\u2011ship is destroyed, the ability is lost until you rebuild a new flagship. |\n| **Replacement** | If the flag\u2011ship is destroyed during a round, you may **re\u2011build it at the start of your next turn** by spending the usual 12\u202fPIP and placing it on any of your controlled planets that have a space dock (or on a carrier that can carry flag\u2011ships). |\n\n### How it works in play\n1. **Deploying the Flagship** \u2013 At the start of the game you place the Flagship Dreadnought on a planet you control that has a Space Dock (or on a carrier you own). It behaves exactly like any other 2\u2011move, 5\u2011combat starship for movement and fleet\u2011capacity purposes.  \n2. **Combat Bonus** \u2013 Whenever you engage in a **space combat** (including the mandatory combat step of the \u201cCombat Phase\u201d or a tactical combat triggered by a **War Sun** or **PDS**), simply remember that each combat die you roll gets a **+1**. It\u2019s as if you rolled a \u201c6\u201d on a standard d6, but the bonus applies *before* any other modifiers (e.g., technology, political awards, etc.).  \n3. **Loss & Replacement** \u2013 The Flagship is a prime target for opponents because of its powerful combat bonus. If it\u2019s destroyed, you lose the +1 bonus for the rest of the round. You can rebuild it on your next turn by paying the full 12\u202fPIP cost; the new ship immediately regains the ability.\n\n### Quick Reference Card (home\u2011brew)\n\n```\nFLAGSHIP \u2013 DREADNOUGHT (SOL)\n---------------------------------\nCombat: 5      Move: 2      Capacity: 2\nCost: 12 PIP\nAbility \u2013 SOLAR ENGINE:\n  \u2022 +1 to every combat die you roll while the flagship is present in the fight.\n  \u2022 Ability ends if the flagship is destroyed; rebuild on next turn for full cost.\n```\n\nThat\u2019s the complete answer: the **Federation of Sol\u2019s flagship is the *Flagship \u2013 Dreadnought***, a 5\u2011combat, 2\u2011move ship that gives Sol players a flat **+1 to all combat rolls** while it\u2019s in the battle."
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": false,
+      "combat_5": true,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 1,
+    "total_checks": 9,
+    "score_percent": 11
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "1 of 9 checks matched."
+  }
+}

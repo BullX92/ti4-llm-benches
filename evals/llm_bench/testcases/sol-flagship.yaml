@@ -1,0 +1,36 @@
+name: Sol flagship reference
+description: >-
+  Baseline flagship testcase for a classic base-game faction. The model should
+  return the Sol flagship identity, core stats, and the infantry-placement
+  ability as strict keyed JSON.
+question: >-
+  What is the name of the Federation of Sol flagship in Twilight Imperium 4,
+  and what are its stats and ability?
+assertions:
+  - key: name
+    type: equals
+    value: Genesis
+  - key: cost
+    type: equals
+    value: '8'
+  - key: combat
+    type: equals
+    value: '5'
+  - key: move
+    type: equals
+    value: '1'
+  - key: capacity
+    type: equals
+    value: '12'
+  - key: sustain_damage
+    type: equals
+    value: 'yes'
+  - key: ability
+    type: contains
+    value: place 1 infantry
+  - key: ability
+    type: contains
+    value: status phase
+  - key: ability
+    type: contains
+    value: space area

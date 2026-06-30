@@ -1,0 +1,66 @@
+{
+  "run_id": "sol-flagship-gemma3-27b-rest-2026-06-30T05:26:23Z",
+  "timestamp_utc": "2026-06-30T05:26:23Z",
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "gemma3:27b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "answer": {
+    "raw_text": "The Federation of Sol flagship in Twilight Imperium 4 is the **Dreadnought**. It's a powerful, versatile ship representing the Federation's focus on technology and adaptability.\n\nHere's a breakdown of its stats and ability:\n\n**Stats:**\n\n*   **Cost:** 8\n*   **Combat:** 7\n*   **Move:** 2\n*   **Capacity:** 3\n*   **Hull:** 8\n*   **Shields:** 4\n\n**Ability: Adaptive Warfare**\n\n*   **Action Cost:** 1\n*   **Effect:** After you perform a tactical action with this ship, you may choose and gain one of the following benefits until the end of the round:\n    *   **+1 Combat:** This ship gains +1 Combat.\n    *   **+1 Move:** This ship gains +1 Move.\n    *   **+1 Capacity:** This ship gains +1 Capacity.\n    *   **+1 Shield:** This ship gains +1 Shield.\n\n**In essence:** The Dreadnought's ability allows it to temporarily specialize in whatever role is needed most at the moment. It can become a more potent fighter, a faster scout, a troop carrier, or a more resilient defender, making it incredibly flexible and valuable in a variety of situations.\n\n\n\nYou can find more detailed information on BoardGameGeek: [https://boardgamegeek.com/object/288524/dreadnought](https://boardgamegeek.com/object/288524/dreadnought)\n\n\n\n"
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": true,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 1,
+    "total_checks": 9,
+    "score_percent": 11
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "Only the cost matched. The flagship name, most stats, and the ability were incorrect."
+  },
+  "artifacts": {
+    "expected_testcase_file": "/opt/data/TI4_AI_Assisstend_Copilot/evals/llm_bench/testcases/sol-flagship.yaml"
+  }
+}

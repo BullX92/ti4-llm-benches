@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TI4 LLM Bench</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">TI4Async benchmark workbench</p>
+          <h1>Traceable testcase cockpit for Promptfoo runs</h1>
+          <p class="lede">
+            Define benchmark cases in the UI, keep them unique by content trace, and only rerun provider/testcase combinations when something actually changed. Cached results stay in SQLite.
+          </p>
+          <div class="hero-actions">
+            <button id="runBtn" type="button">Run benchmark</button>
+            <a class="button-link secondary" href="/promptfoo/" target="_blank" rel="noreferrer">Open Promptfoo viewer</a>
+            <button id="copyBtn" class="secondary" type="button">Copy server command</button>
+          </div>
+          <div class="stat-grid stat-grid-wide">
+            <article class="metric-card compact">
+              <span class="metric-label">Configs</span>
+              <strong id="statProviders" class="metric-value">0</strong>
+            </article>
+            <article class="metric-card compact">
+              <span class="metric-label">Selected models</span>
+              <strong id="statModels" class="metric-value">0</strong>
+            </article>
+            <article class="metric-card compact">
+              <span class="metric-label">Testcases</span>
+              <strong id="statTestcases" class="metric-value">0</strong>
+            </article>
+            <article class="metric-card compact">
+              <span class="metric-label">Last exit</span>
+              <strong id="statLastExit" class="metric-value">—</strong>
+            </article>
+            <article class="metric-card compact">
+              <span class="metric-label">Status</span>
+              <strong id="status" class="metric-value status-inline">booting</strong>
+            </article>
+          </div>
+        </div>
+        <aside class="hero-side">
+          <div class="mini-panel">
+            <p class="mini-label">Workflow</p>
+            <ol class="workflow-list">
+              <li>Add or refresh an Ollama-compatible provider config.</li>
+              <li>Load models and save the shortlist you want to benchmark.</li>
+              <li>Define testcases with prompt + expected key/value results.</li>
+              <li>Run the matrix; unchanged pairs are served from SQLite cache.</li>
+            </ol>
+          </div>
+          <div class="mini-panel terminal-panel">
+            <p class="mini-label">Server command</p>
+            <pre id="cmdPreview">/opt/hermes/.venv/bin/python evals/llm_bench/server.py</pre>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid two-col top-section">
+        <article class="card">
+          <div class="card-head align-start">
+            <div>
+              <p class="section-kicker">Config registry</p>
+              <h2>1. Save Ollama config</h2>
+            </div>
+            <button id="refreshBtn" class="secondary" type="button">Refresh</button>
+          </div>
+          <form id="providerForm" class="form">
+            <label>
+              Config name
+              <input name="name" placeholder="Ollama Cloud" autocomplete="off" />
+            </label>
+            <label>
+              Base URL
+              <input name="base_url" placeholder="https://ollama.com" autocomplete="off" />
+            </label>
+            <label>
+              API key
+              <input name="api_key" placeholder="Paste your key here (optional)" autocomplete="off" />
+            </label>
+            <input name="provider_type" type="hidden" value="ollama" />
+            <p class="hint">
+              Saved locally in SQLite and normalized to an OpenAI-compatible <code>/v1</code> endpoint for Promptfoo.
+            </p>
+            <div class="buttons">
+              <button type="submit">Save config</button>
+            </div>
+            <p id="providerMessage" class="muted"></p>
+          </form>
+        </article>
+
+        <article class="card">
+          <div class="card-head align-start">
+            <div>
+              <p class="section-kicker">Testcase registry</p>
+              <h2>2. Define testcases</h2>
+            </div>
+          </div>
+          <form id="testcaseForm" class="form">
+            <label>
+              Testcase name
+              <input name="name" placeholder="Sol flagship reference" autocomplete="off" />
+            </label>
+            <label>
+              Prompt
+              <textarea name="prompt_text" rows="5" placeholder="What should the model answer?"></textarea>
+            </label>
+            <div class="assertion-builder">
+              <div class="assertion-builder-head">
+                <label class="assertion-label-block">
+                  Expected results
+                  <span class="hint">Define optional JSON key paths plus matcher type and expected value.</span>
+                </label>
+                <button id="addAssertionBtn" class="secondary" type="button">Add expected result</button>
+              </div>
+              <div id="assertionRows" class="assertion-rows"></div>
+            </div>
+            <p class="hint">
+              Use dot paths like <code>flagship.name</code> or leave key empty to match the full response text. Supported matchers: <code>equals</code>, <code>contains</code>, <code>icontains</code>, <code>regex</code>. YAML cases in <code>evals/llm_bench/testcases/</code> sync into the registry automatically.
+            </p>
+            <div class="buttons">
+              <button type="submit">Save testcase</button>
+              <button id="reloadTestcasesBtn" class="secondary" type="button">Reload YAML testcases</button>
+            </div>
+            <p id="testcaseMessage" class="muted"></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="grid main-stack">
+        <article class="card">
+          <div class="card-head align-start">
+            <div>
+              <p class="section-kicker">Model selection</p>
+              <h2>3. Available configs and models</h2>
+            </div>
+            <span class="hint">Fetch models from each config, then save the shortlist you actually want to benchmark.</span>
+          </div>
+          <div id="providerList" class="provider-list"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head align-start">
+            <div>
+              <p class="section-kicker">Testcase list</p>
+              <h2>4. Active benchmark cases</h2>
+            </div>
+            <span class="hint">These cases are traced in the database and used for benchmark runs.</span>
+          </div>
+          <div id="testcaseList" class="testcase-list"></div>
+        </article>
+
+        <article class="card report-card">
+          <div class="output-header">
+            <div>
+              <p class="section-kicker">Published testcase JSON</p>
+              <h2>5. Testcase-first result browser</h2>
+            </div>
+            <span id="publishedState" class="status-pill">Idle</span>
+          </div>
+          <p id="manifestMeta" class="muted">Waiting for testcase result JSON files.</p>
+          <div class="result-browser-layout">
+            <div id="manifestList" class="manifest-list"></div>
+            <div class="aggregate-view-stack">
+              <div id="aggregateView" class="result-cards">
+                <p class="empty">Select a testcase result to inspect the published JSON aggregate.</p>
+              </div>
+              <details class="raw-output">
+                <summary>Raw testcase aggregate JSON</summary>
+                <pre id="aggregateJson"></pre>
+              </details>
+            </div>
+          </div>
+        </article>
+
+        <article class="card report-card">
+          <div class="output-header">
+            <div>
+              <p class="section-kicker">Latest evaluation</p>
+              <h2>6. Benchmark matrix report</h2>
+            </div>
+            <span id="reportState" class="status-pill">Idle</span>
+          </div>
+          <p id="reportMeta" class="muted">Run the benchmark to generate a testcase/model matrix.</p>
+          <div id="reportSummary" class="report-summary"></div>
+          <div id="resultCards" class="result-cards"></div>
+          <details class="raw-output">
+            <summary>Raw Promptfoo output</summary>
+            <pre id="output">Add a config, select models, and save at least one testcase to start.</pre>
+          </details>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

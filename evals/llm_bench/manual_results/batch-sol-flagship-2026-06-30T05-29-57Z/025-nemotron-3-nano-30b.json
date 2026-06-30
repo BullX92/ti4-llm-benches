@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-nemotron-3-nano-30b-2026-06-30T05:34:59Z",
+  "timestamp_utc": "2026-06-30T05:34:59Z",
+  "sequence_index": 25,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "nemotron-3-nano:30b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "**Federation of Sol \u2013 Flagship**\n\n| Item | Details |\n|------|---------|\n| **Name** | **The Sovereign** (the official Sol flagship) |\n| **Ship\u2011type** | Super\u2011Star\u2011Destroyer (the flagship class for the Sol faction) |\n| **Base Stats** | \u2022 **Attack:** 5  <br>\u2022 **Defense:** 4  <br>\u2022 **Movement:** 1 (standard for flagships)  <br>\u2022 **Capacity:** 6 (the number of command tokens it can hold)  <br>\u2022 **Command Value:** 6 (used for fleet\u2011command effects) |\n| **Special Ability** | **Solar Flare** \u2013 *When you gain a resource token from a planet (whether by founding, capturing, or producing), you may immediately gain **one additional resource token of any type** of your choice.*  <br>\u2022 The extra token can be spent that same turn (e.g., to purchase a technology, build a unit, or activate a strategy card).  <br>\u2022 The ability can trigger **multiple times** if the flag\u00adship gains resources from several planets in the same round (once per planet that yields a token). |\n| **Flavor / Thematic Note** | The Sovereign is the flagship of the Sol Federation, a human\u2011led coalition famed for its mastery of solar energy. The \u201cSolar Flare\u201d ability reflects the faction\u2019s ability to harvest excess solar power and convert it into any resource they need at the moment. |\n\n---\n\n### How the Ability Works in Play\n\n1. **Trigger** \u2013 Whenever a planet you control **produces** a resource token (for example, when you gain a **Food**, **Metal**, **Carbon**, **Science**, or **Trade** token from that planet), you may activate Solar Flare.  \n2. **Choice** \u2013 After the original token is placed on the planet, you may immediately take **one extra token of any resource type** (including the same type you just received).  \n3. **Spend / Store** \u2013 The extra token can be used right away (e.g., to pay the cost of a technology, to build a unit, or to activate a strategy card), or it can be kept in your pool for later turns.  \n4. **Limitations** \u2013 The ability can only be used **once per planet per round** and only **if the flag\u00adship is present in the system** where the planet resides (the flag\u00adship must be on the same space\u2011tile as the planet to \u201ccollect\u201d its resources).  \n\n---\n\n### Quick Tactical Take\u2011aways\n\n- **Resource Flexibility** \u2013 Because the extra token can be any type, the ability lets you pivot on the fly. If you\u2019re short on metal to build a cruiser, you can pull a metal token from a different planet that produced science, and vice\u2011versa.  \n- **Combo with Solar Systems** \u2013 Pair the flag\u00adship with **Solar Crystals** (the Sol\u2011specific technology that lets you gain extra resource tokens from planets) to maximise the number of triggers each round.  \n- **Defensive Value** \u2013 The high attack (5) and defense (4) make the Sovereign one of the toughest ships on the board, so it can protect a key system while also \u201cbanking\u201d resources.  \n\n---\n\n**Bottom line:** The Federation of Sol\u2019s flagship, **The Sovereign**, combines strong combat stats (5/4/1/6) with a powerful resource\u2011generation ability (\u201cSolar Flare\u201d) that lets the Sol player convert any planet\u2019s output into a flexible, extra resource of their choosing. This makes the flag\u00adship a cornerstone of both military and economic strategies for the Sol faction."
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": false,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 0,
+    "total_checks": 9,
+    "score_percent": 0
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "0 of 9 checks matched."
+  }
+}

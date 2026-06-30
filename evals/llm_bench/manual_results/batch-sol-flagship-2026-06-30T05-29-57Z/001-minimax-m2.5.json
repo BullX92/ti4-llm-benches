@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-minimax-m2.5-2026-06-30T05:30:36Z",
+  "timestamp_utc": "2026-06-30T05:30:36Z",
+  "sequence_index": 1,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "minimax-m2.5",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "**Federation of\u202fSol \u2013 Flagship**  \n- **Name:** **Helios**  \n- **Unit type:** Flagship (heavy warship)  \n- **Cost:** 8\u202fresources  \n- **Movement:**\u202f2  \n- **Combat:**\u202f7  \n- **Capacity:**\u202f6 (can carry up to six fighters or other units)  \n- **Sustain Damage:**\u202f1 (the hull is reinforced like a Dreadnought)  \n\n**Special Ability**  \n*\u201cMobile Space\u2011Dock\u201d* \u2013 When you **activate a system that contains Helios**, you may treat **each planet in that system as if it had a Space Dock** for the purpose of building units. This lets you produce ground forces (and, if you wish, ships) on any planet in the system as though a Space Dock were present there.  \n\nIn short, Helios is a costly, fast, and heavily armed flagship that also acts as a moving ship\u2011yard, allowing you to build troops on any planet in the system it occupies."
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": true,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": true,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 2,
+    "total_checks": 9,
+    "score_percent": 22
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "2 of 9 checks matched."
+  }
+}

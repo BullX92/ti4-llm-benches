@@ -1,0 +1,41 @@
+# Online research notes:
+# - https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/crimson.tex
+name: Crimson flagship detailed reference (Thunders Edge)
+description: >-
+  YAML-sourced Thunders Edge testcase for the Crimson Rebellion flagship.
+  Verifies breach-related ability wording in addition to the flagship statline.
+question: >-
+  In Twilight Imperium 4 Thunders Edge, what is the flagship of the Crimson Rebellion?
+  Return the faction, expansion source, flagship name, cost, combat, move, capacity,
+  sustain damage status, and the flagship ability.
+assertions:
+  - key: faction
+    type: equals
+    value: The Crimson Rebellion
+  - key: expansion
+    type: equals
+    value: Thunders Edge
+  - key: name
+    type: equals
+    value: Quietus
+  - key: cost
+    type: equals
+    value: '8'
+  - key: combat
+    type: regex
+    value: ^5(\(x2\)|x2)$
+  - key: move
+    type: equals
+    value: '1'
+  - key: capacity
+    type: equals
+    value: '3'
+  - key: sustain_damage
+    type: equals
+    value: 'yes'
+  - key: ability
+    type: icontains
+    value: active breach
+  - key: ability
+    type: icontains
+    value: lose all their unit abilities

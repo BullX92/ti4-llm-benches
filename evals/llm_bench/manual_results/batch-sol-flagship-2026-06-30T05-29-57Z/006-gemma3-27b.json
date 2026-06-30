@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-gemma3-27b-2026-06-30T05:32:45Z",
+  "timestamp_utc": "2026-06-30T05:32:45Z",
+  "sequence_index": 6,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "gemma3:27b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "The Federation of Sol flagship in Twilight Imperium 4 is the **Dreadnought**. It's a powerful, versatile ship representing the Federation's focus on technology and adaptability.\n\nHere's a breakdown of its stats and ability:\n\n**Stats:**\n\n*   **Cost:** 8\n*   **Combat:** 7\n*   **Move:** 2\n*   **Capacity:** 3\n*   **Hull:** 8\n*   **Shields:** 2\n\n**Ability: Adaptive Warfare**\n\n*   **Action Cost:** 1\n*   **Effect:** During a tactical phase, after you reveal your combat cards, you may choose one of the following effects:\n    *   **Direct Hit:** Add +2 to one of your combat cards.\n    *   **Sustain Damage:** Reduce the damage sustained from one enemy combat card by 2.\n    *   **Tactical Coordination:** Reroll one of your combat cards.\n\n**In essence:** The Dreadnought's ability allows you to react to the flow of combat and mitigate unfavorable outcomes, or enhance favorable ones. It's a very flexible ability that makes the Dreadnought a strong performer in a variety of combat situations.\n\n\n\nYou can find more detailed information on the official Twilight Imperium 4 website or in the rulebook: [https://twilightimperium.com/faction/federation-of-sol/](https://twilightimperium.com/faction/federation-of-sol/)\n\n\n\n"
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": true,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": true,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 2,
+    "total_checks": 9,
+    "score_percent": 22
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "2 of 9 checks matched."
+  }
+}

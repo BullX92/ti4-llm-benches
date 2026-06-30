@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-ministral-3-3b-2026-06-30T05:32:23Z",
+  "timestamp_utc": "2026-06-30T05:32:23Z",
+  "sequence_index": 2,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "ministral-3:3b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "In *Twilight Imperium 4*, the **Federation of Sol** (FoS) uses the **USS *Enterprise*** as its flagship.\n\n### **USS *Enterprise* (FoS Flagship)**\n- **Type:** **Starfleet-class** (a high-tier Imperial-class ship with Federation modifications)\n- **Stats:**\n  - **Firepower:** 12 (high)\n  - **Defense:** 10 (high)\n  - **Speed:** 10 (high)\n  - **Size:** 12 (large)\n  - **Special Ability:** **Starfleet Protocol** (a powerful ability that allows the Federation to bypass certain restrictions, such as the **No Starfleet** rule in some variants)\n\n### **Special Ability: Starfleet Protocol**\n- **Effect:** The Federation can use **Starfleet Protocol** to:\n  - **Bypass the \"No Starfleet\" rule** (if present in the variant).\n  - **Gain access to Starfleet tech** (e.g., **Starfleet ships, weapons, or tech**).\n  - **Skip the \"No Starfleet\" penalty** in some variants (e.g., *Twilight Imperium 4: The New Imperium*).\n\nThis makes the *Enterprise* a **highly powerful flagship**, allowing the Federation to dominate the game with advanced technology and superior firepower.\n\nWould you like details on other Federation ships or strategies for using the *Enterprise*?"
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": false,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 0,
+    "total_checks": 9,
+    "score_percent": 0
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "0 of 9 checks matched."
+  }
+}

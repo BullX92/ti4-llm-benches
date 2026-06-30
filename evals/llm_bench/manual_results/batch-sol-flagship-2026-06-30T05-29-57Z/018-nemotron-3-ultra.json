@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-nemotron-3-ultra-2026-06-30T05:34:41Z",
+  "timestamp_utc": "2026-06-30T05:34:41Z",
+  "sequence_index": 18,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "nemotron-3-ultra",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "In *Twilight Imperium: Fourth Edition*, the Federation of Sol flagship is called **The Winnu** (often referred to as **The Winnu Dreadnought** or simply **Sol Flagship**).\n\nHere are its stats and ability:\n\n### **Stats**\n*   **Cost:** 4 Resources\n*   **Combat:** **2** dice at **5** (2x5)\n*   **Move:** 1\n*   **Capacity:** 3\n*   **Sustain Damage:** Yes (1 hit)\n\n### **Ability**\n> **\"After this unit hits, you may reroll 1 of your dice that did not hit. You may reroll 1 die this way per combat round.\"**\n\n---\n\n### **Key Details & Clarifications**\n*   **Trigger:** The ability triggers **after** the \"Roll Dice\" step of combat, specifically after hits are determined for that roll.\n*   **Limitation:** You may only reroll **one die per combat round** total, regardless of how many hits *The Winnu* scores in that round.\n*   **Target Die:** You may reroll **any one of your dice that did not hit** (a \"miss\"). This includes dice rolled by *The Winnu* itself or any other friendly ships in the same combat (e.g., Cruisers, Destroyers, other Dreadnoughts).\n*   **Timing:** The reroll happens immediately. The result of the reroll counts as a hit/miss for that combat round.\n*   **Interaction with Other Abilities:** This works well with the Sol \"Advanced Carrier II\" upgrade (*Assault Cannons*) or the Promissory Note (*Diplomatic Immunity*), but the \"one die per round\" cap is a hard limit from this specific ability."
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": false,
+      "combat_5": false,
+      "move_1": true,
+      "capacity_12": false,
+      "sustain_damage": true,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 2,
+    "total_checks": 9,
+    "score_percent": 22
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "2 of 9 checks matched."
+  }
+}

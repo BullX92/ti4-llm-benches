@@ -1,0 +1,42 @@
+# Online research notes:
+# - https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/hacan.tex
+name: Hacan flagship detailed reference (base game)
+description: >-
+  YAML-sourced base-game flagship testcase grounded in online faction reference
+  data. Verifies Hacan flagship identity, statline, and the trade-good combat
+  modifier text.
+question: >-
+  In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan?
+  Return the faction, expansion source, flagship name, cost, combat, move, capacity,
+  sustain damage status, and the flagship ability.
+assertions:
+  - key: faction
+    type: equals
+    value: The Emirates of Hacan
+  - key: expansion
+    type: equals
+    value: base game
+  - key: name
+    type: equals
+    value: Wrath of Kenara
+  - key: cost
+    type: equals
+    value: '8'
+  - key: combat
+    type: regex
+    value: ^7(\(x2\)|x2)$
+  - key: move
+    type: equals
+    value: '1'
+  - key: capacity
+    type: equals
+    value: '3'
+  - key: sustain_damage
+    type: equals
+    value: 'yes'
+  - key: ability
+    type: icontains
+    value: spend 1 trade good
+  - key: ability
+    type: icontains
+    value: +1 to the result

@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-ministral-3-8b-2026-06-30T05:35:20Z",
+  "timestamp_utc": "2026-06-30T05:35:20Z",
+  "sequence_index": 30,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "ministral-3:8b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "In *Twilight Imperium 4th Edition*, the **Federation of Sol's flagship** is called the **\"Solarian Star Cruiser\"** (or simply **\"Star Cruiser\"**).\n\n### **Stats (Base):**\n- **Cost:** 1000 credits\n- **Capacity:** 1000\n- **Speed:** 1 (Standard)\n- **Armor:** 10\n- **Shields:** 5\n- **Weapons:**\n  - **1x Heavy Laser Cannon** (Damage: 3, Range: 1)\n  - **1x Railgun** (Damage: 4, Range: 2)\n  - **1x Point-Defense System** (Damage: 1, Range: 0, Auto-fire when enemy ships enter range)\n\n### **Special Abilities:**\n- **\"Solarian Precision\"** \u2013 When attacking with a **Heavy Laser Cannon**, roll an extra die.\n- **\"Star Cruiser Resilience\"** \u2013 If the ship is **destroyed**, it may be **repaired** for 500 credits (once per game).\n\n### **Additional Notes:**\n- The **Star Cruiser** is a **high-end capital ship** designed for **long-range combat** and **defensive flexibility**.\n- It excels in **battlefield control** due to its **Point-Defense System** and **high armor/shields**.\n- The **Railgun** makes it a **strong long-range threat**, while the **Heavy Laser Cannon** benefits from **Solarian Precision**.\n\nWould you like details on how it interacts with other Federation ships or strategies?"
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": false,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 0,
+    "total_checks": 9,
+    "score_percent": 0
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "0 of 9 checks matched."
+  }
+}

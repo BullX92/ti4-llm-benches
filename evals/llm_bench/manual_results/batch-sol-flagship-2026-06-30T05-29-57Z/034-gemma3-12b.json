@@ -1,0 +1,65 @@
+{
+  "run_id": "sol-flagship-gemma3-12b-2026-06-30T05:35:52Z",
+  "timestamp_utc": "2026-06-30T05:35:52Z",
+  "sequence_index": 34,
+  "source": "manual_rest_eval",
+  "transport": "rest_api",
+  "provider": {
+    "name": "Ollama Cloud",
+    "type": "openai-compatible",
+    "base_url_source": "/opt/data/.env",
+    "api_key_configured": true,
+    "api_key_exposed": false
+  },
+  "request": {
+    "endpoint_path": "/chat/completions",
+    "method": "POST",
+    "model": "gemma3:12b",
+    "temperature": 0,
+    "question": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?",
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?"
+      }
+    ]
+  },
+  "expected_result": {
+    "name": "Genesis",
+    "cost": "8",
+    "combat": "5",
+    "move": "1",
+    "capacity": "12",
+    "sustain_damage": "yes",
+    "ability_must_contain": [
+      "place 1 infantry",
+      "status phase",
+      "space area"
+    ]
+  },
+  "http_status": 200,
+  "answer": {
+    "raw_text": "The Federation of Sol flagship in Twilight Imperium 4 is the **Dreadnought**. Here's a breakdown of its stats and ability:\n\n**Stats:**\n\n*   **Hull Points (HP):** 8\n*   **Attack:** 3\n*   **Defense:** 3\n*   **Movement:** 2\n*   **Capacity:** 3\n*   **Cost:** 80 Influence, 60 Minerals\n*   **Production Time:** 6\n*   **Faction Ability:** None (it's a standard flagship)\n\n**Ability: Command Carrier**\n\n*   **Action:** As a single action, you may issue a command to a single ship within 3 hexes of the Dreadnought. That ship immediately executes the command as if it were issued by you.\n*   **Important Notes:**\n    *   The ship receiving the command must be able to perform the action.\n    *   You still need to have the command available to use.\n    *   This does *not* allow you to issue a \"Move\" command to a ship that doesn't have movement available. It's primarily useful for things like firing, reinforcing, or using special abilities.\n    *   The ship receiving the command does *not* need to be friendly. You can use this to force an enemy ship to fire at another target, for example.\n\n\n\nThe Dreadnought is a powerful and versatile flagship, especially for a faction like the Federation of Sol that relies on strong fleets and tactical maneuvering. Its Command Carrier ability allows for some clever plays and can disrupt enemy plans."
+  },
+  "scoring": {
+    "method": "9 boolean checks, equal weight",
+    "checks": {
+      "name_genesis": false,
+      "cost_8": true,
+      "combat_5": false,
+      "move_1": false,
+      "capacity_12": false,
+      "sustain_damage": false,
+      "ability_place_1_infantry": false,
+      "ability_status_phase": false,
+      "ability_space_area": false
+    },
+    "matched_checks": 1,
+    "total_checks": 9,
+    "score_percent": 11
+  },
+  "assessment": {
+    "verdict": "incorrect",
+    "summary": "1 of 9 checks matched."
+  }
+}
