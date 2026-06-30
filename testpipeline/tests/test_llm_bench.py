@@ -31,6 +31,7 @@ from testpipeline.server import (
     plan_benchmark_matrix,
     publish_testcase_result_artifacts,
     record_case_result,
+    resolve_run_models,
     save_last_run,
     save_selected_models,
     upsert_testcase,
@@ -39,11 +40,45 @@ from testpipeline.server import (
 
 
 def test_normalize_base_url_adds_scheme_and_v1() -> None:
-    assert normalize_base_url("ollama.internal:11434") == "http://ollama.internal:11434/v1"
+    assert (
+        normalize_base_url("ollama.internal:11434") == "http://ollama.internal:11434/v1"
+    )
 
 
 def test_normalize_models_url_reuses_v1_base() -> None:
-    assert normalize_models_url("https://bench.example.com/v1") == "https://bench.example.com/models"
+    assert (
+        normalize_models_url("https://bench.example.com/v1")
+        == "https://bench.example.com/models"
+    )
+
+
+def test_normalize_base_url_preserves_github_models_inference_root() -> None:
+    assert (
+        normalize_base_url("https://models.github.ai", provider_type="github_models")
+        == "https://models.github.ai/inference"
+    )
+    assert (
+        normalize_base_url(
+            "https://models.github.ai/inference", provider_type="github_models"
+        )
+        == "https://models.github.ai/inference"
+    )
+
+
+def test_normalize_models_url_uses_github_models_catalog() -> None:
+    assert (
+        normalize_models_url(
+            "https://models.github.ai/inference", provider_type="github_models"
+        )
+        == "https://models.github.ai/catalog/models"
+    )
+
+
+def test_normalize_models_url_preserves_openrouter_v1_catalog() -> None:
+    assert (
+        normalize_models_url("https://openrouter.ai/api/v1", provider_type="openai")
+        == "https://openrouter.ai/api/v1/models"
+    )
 
 
 def test_extract_model_names_supports_openai_and_ollama_shapes() -> None:
@@ -55,7 +90,75 @@ def test_extract_model_names_supports_openai_and_ollama_shapes() -> None:
     assert extract_model_names(payload) == ["gemma2", "llama3.2", "phi4", "qwen2.5"]
 
 
-def test_build_promptfoo_config_uses_openai_compatible_provider_ids_for_ollama_configs() -> None:
+def test_extract_model_names_supports_github_models_catalog_shape() -> None:
+    payload = [
+        {"id": "openai/gpt-4.1", "name": "OpenAI GPT-4.1"},
+        {"id": "openai/gpt-4.1-mini", "name": "OpenAI GPT-4.1-mini"},
+        "phi4",
+    ]
+
+    assert extract_model_names(payload) == [
+        "openai/gpt-4.1",
+        "openai/gpt-4.1-mini",
+        "phi4",
+    ]
+
+
+def test_configured_provider_from_env_bootstraps_github_models_provider(
+    tmp_path: Path, monkeypatch
+) -> None:
+    original_db_path = llm_bench_server.DB_PATH
+    try:
+        llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
+        init_db()
+        monkeypatch.setenv("GITHUB_MODELS_API_KEY", "ghp_dummy_models_token")
+        monkeypatch.setenv(
+            "GITHUB_MODELS_BASE_URL", "https://models.github.ai/inference"
+        )
+        monkeypatch.setenv("GITHUB_MODELS_PROVIDER_NAME", "GitHub Models")
+
+        provider = llm_bench_server.configured_provider_from_env()
+
+        assert provider is not None
+        assert provider["provider_type"] == "github_models"
+        assert provider["api_base_url"] == "https://models.github.ai/inference"
+        assert provider["models_url"] == "https://models.github.ai/catalog/models"
+    finally:
+        llm_bench_server.DB_PATH = original_db_path
+
+
+def test_configured_provider_from_env_bootstraps_openrouter_provider(
+    tmp_path: Path, monkeypatch
+) -> None:
+    original_db_path = llm_bench_server.DB_PATH
+    original_configured_llms_path = llm_bench_server.CONFIGURED_LLMS_PATH
+    try:
+        llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
+        llm_bench_server.CONFIGURED_LLMS_PATH = tmp_path / "configured_llms.txt"
+        llm_bench_server.CONFIGURED_LLMS_PATH.write_text(
+            "gpt-4.1-nano\n", encoding="utf-8"
+        )
+        init_db()
+        monkeypatch.setenv("OPENROUTER_API_KEY", "or_dummy_openrouter_token")
+        monkeypatch.setenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+        monkeypatch.setenv("OPENROUTER_PROVIDER_NAME", "OpenRouter")
+
+        provider = llm_bench_server.configured_provider_from_env()
+
+        assert provider is not None
+        assert provider["provider_type"] == "openai"
+        assert provider["api_base_url"] == "https://openrouter.ai/api/v1"
+        assert provider["models_url"] == "https://openrouter.ai/api/v1/models"
+        selected = llm_bench_server.list_selected_models()
+        assert [item["model_name"] for item in selected] == ["gpt-4.1-nano"]
+    finally:
+        llm_bench_server.DB_PATH = original_db_path
+        llm_bench_server.CONFIGURED_LLMS_PATH = original_configured_llms_path
+
+
+def test_build_promptfoo_config_uses_openai_compatible_provider_ids_for_ollama_configs() -> (
+    None
+):
     testcases = [
         {
             "id": 7,
@@ -92,17 +195,35 @@ def test_build_promptfoo_config_uses_openai_compatible_provider_ids_for_ollama_c
         "openai:chat:llama3.2",
         "openai:chat:qwen2.5",
     ]
-    assert payload["providers"][0]["config"]["apiBaseUrl"] == "https://ollama.example.com/v1"
+    assert (
+        payload["providers"][0]["config"]["apiBaseUrl"]
+        == "https://ollama.example.com/v1"
+    )
     assert payload["providers"][0]["config"]["apiKey"] == "secret-key"
     assert payload["tests"][0]["vars"] == {"prompt": BENCHMARK_PROMPT}
-    assert payload["tests"][0]["metadata"] == {"testcase_id": 7, "testcase_name": "Sol flagship", "content_hash": "case-hash-1"}
-    assert all(assertion["type"] == "javascript" for assertion in payload["tests"][0]["assert"])
-    assert payload["tests"][0]["assert"][0]["config"] == {"path": "name", "matcher": "equals", "expected": "Genesis"}
+    assert payload["tests"][0]["metadata"] == {
+        "testcase_id": 7,
+        "testcase_name": "Sol flagship",
+        "content_hash": "case-hash-1",
+    }
+    assert all(
+        assertion["type"] == "javascript" for assertion in payload["tests"][0]["assert"]
+    )
+    assert payload["tests"][0]["assert"][0]["config"] == {
+        "path": "name",
+        "matcher": "equals",
+        "expected": "Genesis",
+    }
     assert "parseStructuredOutput" in payload["tests"][0]["assert"][0]["value"]
-    assert "Output was not valid JSON object text." in payload["tests"][0]["assert"][0]["value"]
+    assert (
+        "Output was not valid JSON object text."
+        in payload["tests"][0]["assert"][0]["value"]
+    )
 
 
-def test_classify_result_kind_treats_assertion_runtime_json_errors_as_failures() -> None:
+def test_classify_result_kind_treats_assertion_runtime_json_errors_as_failures() -> (
+    None
+):
     result = {
         "response": {"output": "Thinking: I am going to reason first"},
         "error": "Custom function threw error: Unexpected token 'T', \"Thinking:\" is not valid JSON",
@@ -110,24 +231,37 @@ def test_classify_result_kind_treats_assertion_runtime_json_errors_as_failures()
     }
 
     assert classify_result_kind(result) == "fail"
-    assert classify_result_label("fail", result["error"], result["response"]["output"]) == "Invalid JSON output"
-    assert "clean JSON object" in classify_result_detail("fail", result["error"], result["response"]["output"])
+    assert (
+        classify_result_label("fail", result["error"], result["response"]["output"])
+        == "Invalid JSON output"
+    )
+    assert "clean JSON object" in classify_result_detail(
+        "fail", result["error"], result["response"]["output"]
+    )
 
 
 def test_classify_result_kind_keeps_provider_blocks_as_errors() -> None:
     result = {
         "response": {"output": ""},
-        "error": "API error: 403 Forbidden {\"error\":\"this model requires a subscription\"}",
+        "error": 'API error: 403 Forbidden {"error":"this model requires a subscription"}',
         "success": False,
     }
 
     assert classify_result_kind(result) == "error"
-    assert classify_result_label("error", result["error"], result["response"]["output"]) == "Subscription required"
+    assert (
+        classify_result_label("error", result["error"], result["response"]["output"])
+        == "Subscription required"
+    )
 
 
 def test_classify_result_label_distinguishes_missing_keys_vs_wrong_answers() -> None:
-    missing_keys_error = "Custom function returned false Missing key path: flagship.name"
-    assert classify_result_label("fail", missing_keys_error, '{"flagship": {}}') == "Missing required JSON keys"
+    missing_keys_error = (
+        "Custom function returned false Missing key path: flagship.name"
+    )
+    assert (
+        classify_result_label("fail", missing_keys_error, '{"flagship": {}}')
+        == "Missing required JSON keys"
+    )
     assert classify_result_label("fail", "", '{"name":"Not Genesis"}') == "Wrong answer"
 
 
@@ -162,7 +296,9 @@ def test_load_yaml_testcase_specs_generates_keyed_sol_prompt(tmp_path: Path) -> 
     original_file = llm_bench_server.DEFAULT_TESTCASE_FILE
     try:
         llm_bench_server.TESTCASES_DIR = tmp_path / "testcases"
-        llm_bench_server.DEFAULT_TESTCASE_FILE = llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        llm_bench_server.DEFAULT_TESTCASE_FILE = (
+            llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        )
         specs = load_yaml_testcase_specs()
         assert len(specs) == 1
         spec = specs[0]
@@ -187,7 +323,9 @@ def test_list_testcases_includes_yaml_source_path(tmp_path: Path) -> None:
     try:
         llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
         llm_bench_server.TESTCASES_DIR = tmp_path / "testcases"
-        llm_bench_server.DEFAULT_TESTCASE_FILE = llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        llm_bench_server.DEFAULT_TESTCASE_FILE = (
+            llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        )
         init_db()
         seeded = list_testcases()
         assert len(seeded) == 1
@@ -230,21 +368,33 @@ def test_build_promptfoo_config_compiles_keyed_assertions_to_javascript() -> Non
     assertions = payload["tests"][0]["assert"]
 
     assert assertions[0]["type"] == "javascript"
-    assert assertions[0]["config"] == {"path": "name", "matcher": "equals", "expected": "Genesis"}
+    assert assertions[0]["config"] == {
+        "path": "name",
+        "matcher": "equals",
+        "expected": "Genesis",
+    }
     assert "context.config.path" in assertions[0]["value"]
     assert "parseStructuredOutput" in assertions[0]["value"]
     assert assertions[1]["type"] == "javascript"
-    assert assertions[1]["config"] == {"path": "ability", "matcher": "contains", "expected": "infantry"}
+    assert assertions[1]["config"] == {
+        "path": "ability",
+        "matcher": "contains",
+        "expected": "infantry",
+    }
 
 
-def test_upsert_testcase_rejects_duplicate_content_under_new_name(tmp_path: Path) -> None:
+def test_upsert_testcase_rejects_duplicate_content_under_new_name(
+    tmp_path: Path,
+) -> None:
     original_db_path = llm_bench_server.DB_PATH
     original_dir = llm_bench_server.TESTCASES_DIR
     original_file = llm_bench_server.DEFAULT_TESTCASE_FILE
     llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
     try:
         llm_bench_server.TESTCASES_DIR = tmp_path / "testcases"
-        llm_bench_server.DEFAULT_TESTCASE_FILE = llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        llm_bench_server.DEFAULT_TESTCASE_FILE = (
+            llm_bench_server.TESTCASES_DIR / "sol-flagship.yaml"
+        )
         init_db()
         seeded = list_testcases()
         assert len(seeded) == 1
@@ -259,7 +409,9 @@ def test_upsert_testcase_rejects_duplicate_content_under_new_name(tmp_path: Path
         except ValueError as exc:
             assert "already exists" in str(exc)
         else:
-            raise AssertionError("upsert_testcase should reject duplicate testcase content")
+            raise AssertionError(
+                "upsert_testcase should reject duplicate testcase content"
+            )
     finally:
         llm_bench_server.DB_PATH = original_db_path
         llm_bench_server.TESTCASES_DIR = original_dir
@@ -271,7 +423,12 @@ def test_plan_benchmark_matrix_skips_cached_case_results(tmp_path: Path) -> None
     try:
         llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
         init_db()
-        provider = upsert_provider("Remote Ollama", "https://ollama.example.com", "secret", provider_type="ollama")
+        provider = upsert_provider(
+            "Remote Ollama",
+            "https://ollama.example.com",
+            "secret",
+            provider_type="ollama",
+        )
         save_selected_models(provider["id"], ["llama3.2"])
         testcase_a = upsert_testcase(
             name="Case A",
@@ -291,7 +448,10 @@ def test_plan_benchmark_matrix_skips_cached_case_results(tmp_path: Path) -> None
             selected_model=selected[0],
             execution_trace=trace,
             result={
-                "provider": {"label": "Remote Ollama / llama3.2", "id": "openai:chat:llama3.2"},
+                "provider": {
+                    "label": "Remote Ollama / llama3.2",
+                    "id": "openai:chat:llama3.2",
+                },
                 "prompt": {"raw": "Prompt A"},
                 "response": {"output": "Alpha"},
                 "success": True,
@@ -302,12 +462,16 @@ def test_plan_benchmark_matrix_skips_cached_case_results(tmp_path: Path) -> None
             run_id=None,
         )
 
-        plan = plan_benchmark_matrix(selected_models=selected, testcases=[testcase_a, testcase_b])
+        plan = plan_benchmark_matrix(
+            selected_models=selected, testcases=[testcase_a, testcase_b]
+        )
         assert len(plan["cached_results"]) == 1
         assert plan["cached_results"][0]["testcase_id"] == testcase_a["id"]
         assert len(plan["pending_by_model"]) == 1
         assert plan["pending_by_model"][0]["selected_model"]["model_name"] == "llama3.2"
-        assert [item["id"] for item in plan["pending_by_model"][0]["testcases"]] == [testcase_b["id"]]
+        assert [item["id"] for item in plan["pending_by_model"][0]["testcases"]] == [
+            testcase_b["id"]
+        ]
     finally:
         llm_bench_server.DB_PATH = original_db_path
 
@@ -317,7 +481,12 @@ def test_plan_benchmark_matrix_reruns_invalid_cached_results(tmp_path: Path) -> 
     try:
         llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
         init_db()
-        provider = upsert_provider("Remote Ollama", "https://ollama.example.com", "secret", provider_type="ollama")
+        provider = upsert_provider(
+            "Remote Ollama",
+            "https://ollama.example.com",
+            "secret",
+            provider_type="ollama",
+        )
         save_selected_models(provider["id"], ["llama3.2"])
         testcase = upsert_testcase(
             name="Case A",
@@ -332,7 +501,10 @@ def test_plan_benchmark_matrix_reruns_invalid_cached_results(tmp_path: Path) -> 
             selected_model=selected[0],
             execution_trace=trace,
             result={
-                "provider": {"label": "Remote Ollama / llama3.2", "id": "openai:chat:llama3.2"},
+                "provider": {
+                    "label": "Remote Ollama / llama3.2",
+                    "id": "openai:chat:llama3.2",
+                },
                 "prompt": {"raw": "Prompt A"},
                 "response": {"output": ""},
                 "error": "API error: 500 internal server error",
@@ -350,17 +522,26 @@ def test_plan_benchmark_matrix_reruns_invalid_cached_results(tmp_path: Path) -> 
         plan = plan_benchmark_matrix(selected_models=selected, testcases=[testcase])
         assert plan["cached_count"] == 0
         assert plan["pending_count"] == 1
-        assert [item["id"] for item in plan["pending_by_model"][0]["testcases"]] == [testcase["id"]]
+        assert [item["id"] for item in plan["pending_by_model"][0]["testcases"]] == [
+            testcase["id"]
+        ]
     finally:
         llm_bench_server.DB_PATH = original_db_path
 
 
-def test_record_case_result_is_available_from_latest_run_payload(tmp_path: Path) -> None:
+def test_record_case_result_is_available_from_latest_run_payload(
+    tmp_path: Path,
+) -> None:
     original_db_path = llm_bench_server.DB_PATH
     try:
         llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
         init_db()
-        provider = upsert_provider("Remote Ollama", "https://ollama.example.com", "secret", provider_type="ollama")
+        provider = upsert_provider(
+            "Remote Ollama",
+            "https://ollama.example.com",
+            "secret",
+            provider_type="ollama",
+        )
         save_selected_models(provider["id"], ["llama3.2"])
         testcase = upsert_testcase(
             name="Case A",
@@ -373,7 +554,10 @@ def test_record_case_result_is_available_from_latest_run_payload(tmp_path: Path)
             selected_model=selected[0],
             execution_trace=compute_case_execution_trace(testcase, selected[0]),
             result={
-                "provider": {"label": "Remote Ollama / llama3.2", "id": "openai:chat:llama3.2"},
+                "provider": {
+                    "label": "Remote Ollama / llama3.2",
+                    "id": "openai:chat:llama3.2",
+                },
                 "prompt": {"raw": "Prompt A"},
                 "response": {"output": "Alpha"},
                 "success": True,
@@ -398,7 +582,9 @@ def test_save_selected_models_rejects_unknown_provider(tmp_path: Path) -> None:
     llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
     try:
         init_db()
-        provider = upsert_provider("Remote Ollama", "http://127.0.0.1:11434", "", provider_type="ollama")
+        provider = upsert_provider(
+            "Remote Ollama", "http://127.0.0.1:11434", "", provider_type="ollama"
+        )
         assert provider["provider_type"] == "ollama"
 
         try:
@@ -415,6 +601,27 @@ def test_save_selected_models_rejects_unknown_provider(tmp_path: Path) -> None:
         llm_bench_server.DB_PATH = original_db_path
 
 
+def test_resolve_run_models_requires_configured_selection(tmp_path: Path) -> None:
+    original_db_path = llm_bench_server.DB_PATH
+    llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
+    try:
+        init_db()
+        upsert_provider(
+            "Remote Ollama", "http://127.0.0.1:11434", "", provider_type="ollama"
+        )
+
+        try:
+            resolve_run_models()
+        except ValueError as exc:
+            assert "configured_llms.txt" in str(exc)
+        else:
+            raise AssertionError(
+                "resolve_run_models should require configured model selections"
+            )
+    finally:
+        llm_bench_server.DB_PATH = original_db_path
+
+
 def test_init_db_cleans_orphaned_selected_models(tmp_path: Path) -> None:
     original_db_path = llm_bench_server.DB_PATH
     llm_bench_server.DB_PATH = tmp_path / "llm_bench.sqlite3"
@@ -422,7 +629,10 @@ def test_init_db_cleans_orphaned_selected_models(tmp_path: Path) -> None:
         init_db()
         with sqlite3.connect(llm_bench_server.DB_PATH) as conn:
             conn.execute("PRAGMA foreign_keys=OFF")
-            conn.execute("INSERT INTO selected_models (provider_id, model_name) VALUES (?, ?)", (999, "orphan-model"))
+            conn.execute(
+                "INSERT INTO selected_models (provider_id, model_name) VALUES (?, ?)",
+                (999, "orphan-model"),
+            )
             conn.commit()
 
         init_db()
@@ -441,7 +651,9 @@ def test_save_last_run_round_trips_payload(tmp_path: Path) -> None:
         payload = {
             "exit_code": 0,
             "saved_at": "2026-06-04T12:00:00Z",
-            "selected_models": [{"provider_name": "Ollama Cloud", "model_name": "gemma4:31b"}],
+            "selected_models": [
+                {"provider_name": "Ollama Cloud", "model_name": "gemma4:31b"}
+            ],
         }
         save_last_run(payload)
         assert load_last_run() == payload
@@ -453,11 +665,25 @@ def test_list_available_models_expands_each_configured_provider(monkeypatch) -> 
     monkeypatch.setattr(
         llm_bench_server,
         "remote_model_names",
-        lambda base_url, api_key: ["alpha", "beta"] if "one" in base_url else ["gamma"],
+        lambda base_url, api_key, provider_type=llm_bench_server.DEFAULT_PROVIDER_TYPE: (
+            ["alpha", "beta"] if "one" in base_url else ["gamma"]
+        ),
     )
     providers = [
-        {"id": 1, "name": "Provider One", "provider_type": "openai", "base_url": "https://one.example.com/v1", "api_key": "k1"},
-        {"id": 2, "name": "Provider Two", "provider_type": "openai", "base_url": "https://two.example.com/v1", "api_key": "k2"},
+        {
+            "id": 1,
+            "name": "Provider One",
+            "provider_type": "openai",
+            "base_url": "https://one.example.com/v1",
+            "api_key": "k1",
+        },
+        {
+            "id": 2,
+            "name": "Provider Two",
+            "provider_type": "openai",
+            "base_url": "https://two.example.com/v1",
+            "api_key": "k2",
+        },
     ]
 
     models = list_available_models(providers)

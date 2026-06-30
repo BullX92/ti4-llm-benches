@@ -7,9 +7,28 @@ Eigenes privates Repo für TI4/AsyncTI4-bezogene LLM-Benchmarks.
 Dieses Repo trennt die LLM-Benchmark-Arbeit sauber vom übrigen TI4/Hermes-Code.
 Die Pipeline bleibt absichtlich simpel:
 1. konfigurierte Provider lesen
-2. verfügbare Modelle je Provider abrufen
+2. konfigurierte Modelle je Provider laden
 3. alle YAML-Testcases durchgehen
 4. nur fehlende oder invalide Ergebnisse erneut ausführen
+
+## OpenRouter Setup
+
+`.env` kann direkt einen OpenRouter-Provider bootstrappen:
+
+```dotenv
+OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY_HERE
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_PROVIDER_NAME=OpenRouter
+```
+
+Die Benchmark-Auswahl kommt aus `configured_llms.txt` oder alternativ aus `LLM_BENCH_CONFIGURED_LLMS`.
+Eine Zeile pro exakter Modell-ID, zum Beispiel:
+
+```text
+openai/gpt-4.1-nano
+```
+
+Nur diese konfigurierten Modelle werden ausgeführt. Bereits vorhandene valide `pass`- oder `fail`-Ergebnisse werden aus dem Cache übersprungen.
 
 ## Top-Level-Struktur
 

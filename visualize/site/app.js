@@ -173,7 +173,7 @@ function renderSummaryCards(runPayload) {
   reportSummary.innerHTML = '';
   const summary = runPayload.report_summary || {};
   const cards = [
-    ['Discovered models', String(summary.selected_model_count ?? runPayload.selected_models?.length ?? 0)],
+    ['Configured models', String(summary.selected_model_count ?? runPayload.selected_models?.length ?? 0)],
     ['Testcases', String(summary.testcase_count ?? runPayload.testcases?.length ?? 0)],
     ['Pass', String(summary.pass_count ?? 0)],
     ['Fail', String(summary.fail_count ?? 0)],
@@ -463,7 +463,7 @@ function renderProviderCard(provider) {
       </div>
     </div>
     <div class="selected-models">
-      <p class="muted">${provider.selected_models.length ? 'Saved legacy shortlist (optional)' : 'No saved shortlist — run uses all discovered models'}</p>
+      <p class="muted">${provider.selected_models.length ? 'Configured models for benchmark runs' : 'No configured models yet — this provider will not run until you save a selection'}</p>
       ${provider.selected_models.length ? `<div class="chips">${provider.selected_models.map((name) => `<span class="chip">${escapeHtml(name)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="selected-models testcase-prompt-box">
@@ -473,7 +473,7 @@ function renderProviderCard(provider) {
     <div class="models-box" data-models-box="${provider.id}">Click “Load models” to fetch the available models from this provider.</div>
     <div class="provider-footer">
       <button type="button" data-action="save-selection">Save selection</button>
-      <span class="muted" data-provider-status="${provider.id}">${provider.selected_count ? `${provider.selected_count} chosen` : 'Ready'}</span>
+      <span class="muted" data-provider-status="${provider.id}">${provider.selected_count ? `${provider.selected_count} configured` : 'No models configured'}</span>
     </div>
   `;
 

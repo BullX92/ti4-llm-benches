@@ -1,0 +1,1043 @@
+{
+  "schema_version": 1,
+  "testcase": {
+    "id": 3,
+    "name": "Hacan flagship detailed reference (base game)",
+    "slug": "hacan-flagship-detailed-reference-base-game",
+    "content_hash": "5526b95878a2548747054b2f951c2811ec7ee1e1222daea37922f67a75a1ab61",
+    "source_path": "C:\\01_BullX_Repos\\ti4_llm_bench\\ti4-llm-benches\\testcases\\hacan-flagship-base.yaml",
+    "question": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.",
+    "description": "YAML-sourced base-game flagship testcase grounded in online faction reference data. Verifies Hacan flagship identity, statline, and the trade-good combat modifier text.",
+    "prompt_text": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key.",
+    "assertions": [
+      {
+        "type": "equals",
+        "value": "The Emirates of Hacan",
+        "key": "faction"
+      },
+      {
+        "type": "equals",
+        "value": "base game",
+        "key": "expansion"
+      },
+      {
+        "type": "equals",
+        "value": "Wrath of Kenara",
+        "key": "name"
+      },
+      {
+        "type": "equals",
+        "value": "8",
+        "key": "cost"
+      },
+      {
+        "type": "regex",
+        "value": "^7(\\(x2\\)|x2)$",
+        "key": "combat"
+      },
+      {
+        "type": "equals",
+        "value": "1",
+        "key": "move"
+      },
+      {
+        "type": "equals",
+        "value": "3",
+        "key": "capacity"
+      },
+      {
+        "type": "equals",
+        "value": "yes",
+        "key": "sustain_damage"
+      },
+      {
+        "type": "icontains",
+        "value": "spend 1 trade good",
+        "key": "ability"
+      },
+      {
+        "type": "icontains",
+        "value": "+1 to the result",
+        "key": "ability"
+      }
+    ],
+    "expected_result": {
+      "faction": "The Emirates of Hacan",
+      "expansion": "base game",
+      "name": "Wrath of Kenara",
+      "cost": "8",
+      "move": "1",
+      "capacity": "3",
+      "sustain_damage": "yes",
+      "ability_must_contain": [
+        "spend 1 trade good",
+        "+1 to the result"
+      ]
+    },
+    "created_at": "2026-06-30 13:23:06",
+    "updated_at": "2026-06-30 13:23:06"
+  },
+  "summary": {
+    "model_count": 2,
+    "pass_count": 0,
+    "fail_count": 2,
+    "error_count": 0,
+    "last_updated": "2026-06-30 14:10:19"
+  },
+  "models": [
+    {
+      "execution_trace": "2775c661c24890effa53ebce7d54b89fedd359257ca8e68d24896a25ede0a1b9",
+      "testcase_id": 3,
+      "testcase_name": "Hacan flagship detailed reference (base game)",
+      "prompt_text": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key.",
+      "assertions": [
+        {
+          "type": "equals",
+          "value": "The Emirates of Hacan",
+          "key": "faction"
+        },
+        {
+          "type": "equals",
+          "value": "base game",
+          "key": "expansion"
+        },
+        {
+          "type": "equals",
+          "value": "Wrath of Kenara",
+          "key": "name"
+        },
+        {
+          "type": "equals",
+          "value": "8",
+          "key": "cost"
+        },
+        {
+          "type": "regex",
+          "value": "^7(\\(x2\\)|x2)$",
+          "key": "combat"
+        },
+        {
+          "type": "equals",
+          "value": "1",
+          "key": "move"
+        },
+        {
+          "type": "equals",
+          "value": "3",
+          "key": "capacity"
+        },
+        {
+          "type": "equals",
+          "value": "yes",
+          "key": "sustain_damage"
+        },
+        {
+          "type": "icontains",
+          "value": "spend 1 trade good",
+          "key": "ability"
+        },
+        {
+          "type": "icontains",
+          "value": "+1 to the result",
+          "key": "ability"
+        }
+      ],
+      "content_hash": "5526b95878a2548747054b2f951c2811ec7ee1e1222daea37922f67a75a1ab61",
+      "provider_id": 14,
+      "provider_name": "OpenRouter",
+      "provider_type": "openai",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model_name": "openai/gpt-4.1-mini",
+      "provider_trace": "2f2c63fb48e6a717e5bfe1021ac4c30d2d701ab01da5693010769eb184cd74b7",
+      "success": false,
+      "score": 0.2,
+      "result_kind": "fail",
+      "result_subtype": "missing_keys",
+      "label": "Missing required JSON keys",
+      "detail": "The model returned JSON, but one or more required keys were missing from the response object.",
+      "response_output": "{\n  \"faction\": \"Emirates of Hacan\",\n  \"expansion\": \"Base Game\",\n  \"name\": \"The Leviathan\",\n  \"cost\": \"8\",\n  \"combat\": \"5\",\n  \"move\": \"1\",\n  \"capacity\": \"5\",\n  \"sustain_damage\": \"Yes\",\n  \"ability\": \"After you activate The Leviathan, gain 1 trade good for each other player.\"\n}",
+      "error_text": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+      "latency_ms": 688,
+      "token_usage": {
+        "prompt": 124,
+        "completion": 93,
+        "cached": 0,
+        "total": 217,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "result": {
+        "cost": 0,
+        "error": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.2,
+          "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "faction",
+                  "matcher": "equals",
+                  "expected": "The Emirates of Hacan"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "expansion",
+                  "matcher": "equals",
+                  "expected": "base game"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "name",
+                  "matcher": "equals",
+                  "expected": "Wrath of Kenara"
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "cost",
+                  "matcher": "equals",
+                  "expected": "8"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "combat",
+                  "matcher": "regex",
+                  "expected": "^7(\\(x2\\)|x2)$"
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "move",
+                  "matcher": "equals",
+                  "expected": "1"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "capacity",
+                  "matcher": "equals",
+                  "expected": "3"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "sustain_damage",
+                  "matcher": "equals",
+                  "expected": "yes"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "ability",
+                  "matcher": "icontains",
+                  "expected": "spend 1 trade good"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "ability",
+                  "matcher": "icontains",
+                  "expected": "+1 to the result"
+                }
+              }
+            }
+          ]
+        },
+        "id": "63bc14dd-29e6-4aa5-a808-fc704ba51d0a",
+        "latencyMs": 688,
+        "namedScores": {},
+        "prompt": {
+          "raw": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key.",
+          "label": "{{prompt}}",
+          "config": {}
+        },
+        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
+        "promptIdx": 0,
+        "provider": {
+          "id": "openai:chat:openai/gpt-4.1-mini",
+          "label": "OpenRouter / openai/gpt-4.1-mini"
+        },
+        "response": {
+          "output": "{\n  \"faction\": \"Emirates of Hacan\",\n  \"expansion\": \"Base Game\",\n  \"name\": \"The Leviathan\",\n  \"cost\": \"8\",\n  \"combat\": \"5\",\n  \"move\": \"1\",\n  \"capacity\": \"5\",\n  \"sustain_damage\": \"Yes\",\n  \"ability\": \"After you activate The Leviathan, gain 1 trade good for each other player.\"\n}",
+          "tokenUsage": {
+            "total": 217,
+            "prompt": 124,
+            "completion": 93,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0
+            }
+          },
+          "cached": false,
+          "latencyMs": 688,
+          "finishReason": "stop",
+          "guardrails": {
+            "flagged": false
+          },
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "access-control-allow-origin": "*",
+                "access-control-expose-headers": "X-Generation-Id,cf-ray",
+                "cf-ray": "[REDACTED]",
+                "connection": "keep-alive",
+                "content-type": "application/json",
+                "date": "Tue, 30 Jun 2026 14:10:01 GMT",
+                "permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+                "referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+                "server": "cloudflare",
+                "transfer-encoding": "chunked",
+                "x-content-type-options": "nosniff",
+                "x-generation-id": "gen-1782828601-W4FWQvrYMQLY6N099NTv"
+              }
+            }
+          }
+        },
+        "score": 0.2,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "prompt": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key."
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "faction",
+                "matcher": "equals",
+                "expected": "The Emirates of Hacan"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "expansion",
+                "matcher": "equals",
+                "expected": "base game"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "name",
+                "matcher": "equals",
+                "expected": "Wrath of Kenara"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "cost",
+                "matcher": "equals",
+                "expected": "8"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "combat",
+                "matcher": "regex",
+                "expected": "^7(\\(x2\\)|x2)$"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "move",
+                "matcher": "equals",
+                "expected": "1"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "capacity",
+                "matcher": "equals",
+                "expected": "3"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "sustain_damage",
+                "matcher": "equals",
+                "expected": "yes"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "ability",
+                "matcher": "icontains",
+                "expected": "spend 1 trade good"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "ability",
+                "matcher": "icontains",
+                "expected": "+1 to the result"
+              }
+            }
+          ],
+          "metadata": {
+            "testcase_id": 3,
+            "testcase_name": "Hacan flagship detailed reference (base game)",
+            "content_hash": "[REDACTED]"
+          },
+          "options": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 124,
+          "completion": 93,
+          "cached": 0,
+          "total": 217,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "prompt": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key."
+        },
+        "metadata": {
+          "testcase_id": 3,
+          "testcase_name": "Hacan flagship detailed reference (base game)",
+          "content_hash": "5526b95878a2548747054b2f951c2811ec7ee1e1222daea37922f67a75a1ab61",
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "access-control-allow-origin": "*",
+              "access-control-expose-headers": "X-Generation-Id,cf-ray",
+              "cf-ray": "[REDACTED]",
+              "connection": "keep-alive",
+              "content-type": "application/json",
+              "date": "Tue, 30 Jun 2026 14:10:01 GMT",
+              "permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+              "referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+              "server": "cloudflare",
+              "transfer-encoding": "chunked",
+              "x-content-type-options": "nosniff",
+              "x-generation-id": "gen-1782828601-W4FWQvrYMQLY6N099NTv"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      "saved_at": "2026-06-30 14:10:03"
+    },
+    {
+      "execution_trace": "cff43cd2afe2ecadcdc53e3115182c28266cb7869efa1310b8ac4e8e0629ce46",
+      "testcase_id": 3,
+      "testcase_name": "Hacan flagship detailed reference (base game)",
+      "prompt_text": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key.",
+      "assertions": [
+        {
+          "type": "equals",
+          "value": "The Emirates of Hacan",
+          "key": "faction"
+        },
+        {
+          "type": "equals",
+          "value": "base game",
+          "key": "expansion"
+        },
+        {
+          "type": "equals",
+          "value": "Wrath of Kenara",
+          "key": "name"
+        },
+        {
+          "type": "equals",
+          "value": "8",
+          "key": "cost"
+        },
+        {
+          "type": "regex",
+          "value": "^7(\\(x2\\)|x2)$",
+          "key": "combat"
+        },
+        {
+          "type": "equals",
+          "value": "1",
+          "key": "move"
+        },
+        {
+          "type": "equals",
+          "value": "3",
+          "key": "capacity"
+        },
+        {
+          "type": "equals",
+          "value": "yes",
+          "key": "sustain_damage"
+        },
+        {
+          "type": "icontains",
+          "value": "spend 1 trade good",
+          "key": "ability"
+        },
+        {
+          "type": "icontains",
+          "value": "+1 to the result",
+          "key": "ability"
+        }
+      ],
+      "content_hash": "5526b95878a2548747054b2f951c2811ec7ee1e1222daea37922f67a75a1ab61",
+      "provider_id": 14,
+      "provider_name": "OpenRouter",
+      "provider_type": "openai",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model_name": "openai/gpt-4.1-nano",
+      "provider_trace": "bcbd7f07d2ff00a3be565aed1f693c13ee051b2ab6d36a260b3f011ee852f96a",
+      "success": false,
+      "score": 0.1,
+      "result_kind": "fail",
+      "result_subtype": "missing_keys",
+      "label": "Missing required JSON keys",
+      "detail": "The model returned JSON, but one or more required keys were missing from the response object.",
+      "response_output": "{\n  \"faction\": \"Emirates of Hacan\",\n  \"expansion\": \"Base Game\",\n  \"name\": \"Hacan Flagship\",\n  \"cost\": \"6\",\n  \"combat\": \"4\",\n  \"move\": \"1\",\n  \"capacity\": \"2\",\n  \"sustain_damage\": \"Yes\",\n  \"ability\": \"Once per round, you may spend 1 token to produce 1 token of influence.\" \n}",
+      "error_text": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+      "latency_ms": 414,
+      "token_usage": {
+        "prompt": 124,
+        "completion": 96,
+        "cached": 0,
+        "total": 220,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "result": {
+        "cost": 0,
+        "error": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.1,
+          "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "faction",
+                  "matcher": "equals",
+                  "expected": "The Emirates of Hacan"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "expansion",
+                  "matcher": "equals",
+                  "expected": "base game"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "name",
+                  "matcher": "equals",
+                  "expected": "Wrath of Kenara"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "cost",
+                  "matcher": "equals",
+                  "expected": "8"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "combat",
+                  "matcher": "regex",
+                  "expected": "^7(\\(x2\\)|x2)$"
+                }
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "move",
+                  "matcher": "equals",
+                  "expected": "1"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "capacity",
+                  "matcher": "equals",
+                  "expected": "3"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "sustain_damage",
+                  "matcher": "equals",
+                  "expected": "yes"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "ability",
+                  "matcher": "icontains",
+                  "expected": "spend 1 trade good"
+                }
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\nfunction parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "assertion": {
+                "type": "javascript",
+                "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+                "config": {
+                  "path": "ability",
+                  "matcher": "icontains",
+                  "expected": "+1 to the result"
+                }
+              }
+            }
+          ]
+        },
+        "id": "5c3b75b2-739d-42ba-aba7-c8ba8b228ae0",
+        "latencyMs": 414,
+        "namedScores": {},
+        "prompt": {
+          "raw": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key.",
+          "label": "{{prompt}}",
+          "config": {}
+        },
+        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
+        "promptIdx": 0,
+        "provider": {
+          "id": "openai:chat:openai/gpt-4.1-nano",
+          "label": "OpenRouter / openai/gpt-4.1-nano"
+        },
+        "response": {
+          "output": "{\n  \"faction\": \"Emirates of Hacan\",\n  \"expansion\": \"Base Game\",\n  \"name\": \"Hacan Flagship\",\n  \"cost\": \"6\",\n  \"combat\": \"4\",\n  \"move\": \"1\",\n  \"capacity\": \"2\",\n  \"sustain_damage\": \"Yes\",\n  \"ability\": \"Once per round, you may spend 1 token to produce 1 token of influence.\" \n}",
+          "tokenUsage": {
+            "total": 220,
+            "prompt": 124,
+            "completion": 96,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0
+            }
+          },
+          "cached": false,
+          "latencyMs": 414,
+          "finishReason": "stop",
+          "guardrails": {
+            "flagged": false
+          },
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "access-control-allow-origin": "*",
+                "access-control-expose-headers": "X-Generation-Id,cf-ray",
+                "cf-ray": "[REDACTED]",
+                "connection": "keep-alive",
+                "content-type": "application/json",
+                "date": "Tue, 30 Jun 2026 14:10:17 GMT",
+                "permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+                "referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+                "server": "cloudflare",
+                "transfer-encoding": "chunked",
+                "x-content-type-options": "nosniff",
+                "x-generation-id": "gen-1782828616-j1lOi8it0f2Gt5etm3mJ"
+              }
+            }
+          }
+        },
+        "score": 0.1,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "prompt": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key."
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "faction",
+                "matcher": "equals",
+                "expected": "The Emirates of Hacan"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "expansion",
+                "matcher": "equals",
+                "expected": "base game"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "name",
+                "matcher": "equals",
+                "expected": "Wrath of Kenara"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "cost",
+                "matcher": "equals",
+                "expected": "8"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "combat",
+                "matcher": "regex",
+                "expected": "^7(\\(x2\\)|x2)$"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "move",
+                "matcher": "equals",
+                "expected": "1"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "capacity",
+                "matcher": "equals",
+                "expected": "3"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "sustain_damage",
+                "matcher": "equals",
+                "expected": "yes"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "ability",
+                "matcher": "icontains",
+                "expected": "spend 1 trade good"
+              }
+            },
+            {
+              "type": "javascript",
+              "value": "function parseStructuredOutput(raw) {\n  if (raw && typeof raw === 'object') {\n    return { ok: true, value: raw };\n  }\n  const text = String(raw ?? '').trim();\n  if (!text) {\n    return { ok: false, reason: 'Empty output; expected a JSON object.' };\n  }\n  const candidates = [];\n  const fenced = text.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (fenced && fenced[1]) {\n    candidates.push(fenced[1].trim());\n  }\n  candidates.push(text);\n  const firstBrace = text.indexOf('{');\n  const lastBrace = text.lastIndexOf('}');\n  if (firstBrace != -1 && lastBrace > firstBrace) {\n    candidates.push(text.slice(firstBrace, lastBrace + 1));\n  }\n  for (const candidate of candidates) {\n    try {\n      const parsed = JSON.parse(candidate);\n      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {\n        return { ok: true, value: parsed };\n      }\n    } catch {}\n  }\n  return { ok: false, reason: 'Output was not valid JSON object text.' };\n}\nconst parsed = parseStructuredOutput(output);\nif (!parsed.ok) {\n  return { pass: false, score: 0, reason: parsed.reason };\n}\nconst source = parsed.value;\nconst path = String(context.config.path || '').split('.').filter(Boolean);\nlet current = source;\nfor (const segment of path) {\n  if (current == null || !(segment in current)) {\n    return { pass: false, score: 0, reason: `Missing key path: ${context.config.path}` };\n  }\n  current = current[segment];\n}\nconst actual = current == null ? '' : String(current);\nconst expected = String(context.config.expected ?? '');\nswitch (context.config.matcher) {\n  case 'equals':\n    return actual === expected;\n  case 'contains':\n    return actual.includes(expected);\n  case 'icontains':\n    return actual.toLowerCase().includes(expected.toLowerCase());\n  case 'regex':\n    return new RegExp(expected).test(actual);\n  default:\n    throw new Error(`Unsupported matcher: ${context.config.matcher}`);\n}",
+              "config": {
+                "path": "ability",
+                "matcher": "icontains",
+                "expected": "+1 to the result"
+              }
+            }
+          ],
+          "metadata": {
+            "testcase_id": 3,
+            "testcase_name": "Hacan flagship detailed reference (base game)",
+            "content_hash": "[REDACTED]"
+          },
+          "options": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 124,
+          "completion": 96,
+          "cached": 0,
+          "total": 220,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "prompt": "In Twilight Imperium 4 base game, what is the flagship of the Emirates of Hacan? Return the faction, expansion source, flagship name, cost, combat, move, capacity, sustain damage status, and the flagship ability.\n\nAnswer ONLY with a JSON object. Do not include markdown, explanations, or code fences.\nUse exactly these keys and no others:\n- faction\n- expansion\n- name\n- cost\n- combat\n- move\n- capacity\n- sustain_damage\n- ability\nReturn each value as a string using the correct TI4 fact for that key."
+        },
+        "metadata": {
+          "testcase_id": 3,
+          "testcase_name": "Hacan flagship detailed reference (base game)",
+          "content_hash": "5526b95878a2548747054b2f951c2811ec7ee1e1222daea37922f67a75a1ab61",
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "access-control-allow-origin": "*",
+              "access-control-expose-headers": "X-Generation-Id,cf-ray",
+              "cf-ray": "[REDACTED]",
+              "connection": "keep-alive",
+              "content-type": "application/json",
+              "date": "Tue, 30 Jun 2026 14:10:17 GMT",
+              "permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+              "referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+              "server": "cloudflare",
+              "transfer-encoding": "chunked",
+              "x-content-type-options": "nosniff",
+              "x-generation-id": "gen-1782828616-j1lOi8it0f2Gt5etm3mJ"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      "saved_at": "2026-06-30 14:10:19"
+    }
+  ],
+  "generated_at": "2026-06-30T14:25:04Z",
+  "file_name": "hacan-flagship-detailed-reference-base-game__5526b95878a2.json"
+}

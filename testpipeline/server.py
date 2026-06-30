@@ -20,27 +20,90 @@ from urllib.request import Request, urlopen
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent
-REPO_ROOT = ROOT.parent
+MODULE_ROOT = Path(__file__).resolve().parent
+MODULE_REPO_ROOT = MODULE_ROOT.parent
+
+
+def load_env_file(path: Path) -> None:
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return
+
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        env_key = key.strip()
+        if not env_key or env_key in os.environ:
+            continue
+        env_value = value.strip()
+        if (
+            len(env_value) >= 2
+            and env_value[0] == env_value[-1]
+            and env_value[0] in {'"', "'"}
+        ):
+            env_value = env_value[1:-1]
+        os.environ[env_key] = env_value
+
+
+load_env_file(MODULE_REPO_ROOT / ".env")
+
+ROOT = MODULE_ROOT
+REPO_ROOT = MODULE_REPO_ROOT
 SITE = REPO_ROOT / "visualize" / "site"
 TESTCASES_DIR = REPO_ROOT / "testcases"
-RESULTS_DIR = Path(os.environ.get("LLM_BENCH_RESULTS_DIR", str(REPO_ROOT / "testresults" / "testcase_results"))).expanduser()
-DB_PATH = Path(os.environ.get("LLM_BENCH_DB_PATH", str(REPO_ROOT / "testresults" / "llm_bench.sqlite3"))).expanduser()
-RUNS_DIR = Path(os.environ.get("LLM_BENCH_RUNS_DIR", str(REPO_ROOT / "testresults" / "runs"))).expanduser()
-LAST_RUN_PATH = Path(os.environ.get("LLM_BENCH_LAST_RUN_PATH", str(RUNS_DIR / "last_run.json"))).expanduser()
-PROMPTFOO_CMD = ["npx", "-y", "promptfoo@latest", "eval", "--config"]
+RESULTS_DIR = Path(
+    os.environ.get(
+        "LLM_BENCH_RESULTS_DIR", str(REPO_ROOT / "testresults" / "testcase_results")
+    )
+).expanduser()
+DB_PATH = Path(
+    os.environ.get(
+        "LLM_BENCH_DB_PATH", str(REPO_ROOT / "testresults" / "llm_bench.sqlite3")
+    )
+).expanduser()
+RUNS_DIR = Path(
+    os.environ.get("LLM_BENCH_RUNS_DIR", str(REPO_ROOT / "testresults" / "runs"))
+).expanduser()
+LAST_RUN_PATH = Path(
+    os.environ.get("LLM_BENCH_LAST_RUN_PATH", str(RUNS_DIR / "last_run.json"))
+).expanduser()
+NPX_EXECUTABLE = "npx.cmd" if os.name == "nt" else "npx"
+PROMPTFOO_CMD = [NPX_EXECUTABLE, "-y", "promptfoo@latest", "eval", "--config"]
 PORT = int(os.environ.get("PORT", "8642"))
 VIEW_PORT = int(os.environ.get("PROMPTFOO_VIEW_PORT", "9119"))
-PROMPTFOO_VIEW_CMD = ["npx", "-y", "promptfoo@latest", "view", "--port", str(VIEW_PORT), "--no"]
+PROMPTFOO_VIEW_CMD = [
+    NPX_EXECUTABLE,
+    "-y",
+    "promptfoo@latest",
+    "view",
+    "--port",
+    str(VIEW_PORT),
+    "--no",
+]
 VIEW_PREFIX = "/promptfoo"
 VIEWER_ROOT_PATHS = {"/favicon.png", "/manifest.json", "/robots.txt"}
-LOCAL_API_PATHS = {"/api/status", "/api/run", "/api/providers", "/api/testcases", "/api/results/manifest"}
+LOCAL_API_PATHS = {
+    "/api/status",
+    "/api/run",
+    "/api/providers",
+    "/api/testcases",
+    "/api/results/manifest",
+}
 DEFAULT_PROVIDER_TYPE = "ollama"
 RESULTS_SCHEMA_VERSION = 1
 EVALUATOR_TRACE_VERSION = "2026-06-04-json-contract-v2"
 BIND_HOST = os.environ.get("BIND_HOST", "127.0.0.1")
 DEFAULT_TESTCASE_NAME = "Sol flagship reference"
 DEFAULT_TESTCASE_FILE = TESTCASES_DIR / "sol-flagship.yaml"
+GITHUB_MODELS_PROVIDER_TYPE = "github_models"
+GITHUB_MODELS_DEFAULT_BASE_URL = "https://models.github.ai/inference"
+GITHUB_MODELS_DEFAULT_NAME = "GitHub Models"
+OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_DEFAULT_NAME = "OpenRouter"
+CONFIGURED_LLMS_PATH = REPO_ROOT / "configured_llms.txt"
 
 BENCHMARK_QUESTION = (
     "What is the name of the Federation of Sol flagship in Twilight Imperium 4, "
@@ -92,11 +155,16 @@ def sanitize_public_payload(value: object) -> object:
 
 
 def selected_model_public_dict(selected_model: dict) -> dict:
+    provider_type = str(selected_model.get("provider_type") or DEFAULT_PROVIDER_TYPE)
     return {
         "provider_id": selected_model.get("provider_id"),
         "provider_name": selected_model.get("provider_name"),
-        "provider_type": selected_model.get("provider_type"),
-        "base_url": normalize_base_url(str(selected_model.get("base_url") or "")) if selected_model.get("base_url") else "",
+        "provider_type": provider_type,
+        "base_url": normalize_base_url(
+            str(selected_model.get("base_url") or ""), provider_type=provider_type
+        )
+        if selected_model.get("base_url")
+        else "",
         "model_name": selected_model.get("model_name"),
     }
 
@@ -139,26 +207,52 @@ def build_keyed_json_prompt(question: str, assertions: list[dict]) -> str:
 BENCHMARK_PROMPT = build_keyed_json_prompt(BENCHMARK_QUESTION, BENCHMARK_ASSERTIONS)
 
 
-def normalize_base_url(base_url: str) -> str:
+def normalize_provider_type(provider_type: str | None) -> str:
+    normalized = (
+        str(provider_type or DEFAULT_PROVIDER_TYPE).strip().lower().replace("-", "_")
+    )
+    if normalized in {"githubmodels", "github_models"}:
+        return GITHUB_MODELS_PROVIDER_TYPE
+    if normalized == "openrouter":
+        return "openai"
+    return normalized or DEFAULT_PROVIDER_TYPE
+
+
+def normalize_base_url(
+    base_url: str, provider_type: str = DEFAULT_PROVIDER_TYPE
+) -> str:
     value = (base_url or "").strip().rstrip("/")
     if not value:
         raise ValueError("base_url is required")
     if "://" not in value:
         value = f"http://{value}"
+    if normalize_provider_type(provider_type) == GITHUB_MODELS_PROVIDER_TYPE:
+        if value.endswith("/inference"):
+            return value
+        return f"{value}/inference"
     if value.endswith("/v1"):
         return value
     return f"{value}/v1"
 
 
-def normalize_models_url(base_url: str) -> str:
-    api_base = normalize_base_url(base_url)
-    return api_base[:-3] + "/models" if api_base.endswith("/v1") else f"{api_base}/models"
+def normalize_models_url(
+    base_url: str, provider_type: str = DEFAULT_PROVIDER_TYPE
+) -> str:
+    api_base = normalize_base_url(base_url, provider_type=provider_type)
+    if normalize_provider_type(provider_type) == GITHUB_MODELS_PROVIDER_TYPE:
+        if api_base.endswith("/inference"):
+            return f"{api_base[:-10]}/catalog/models"
+        return f"{api_base}/catalog/models"
+    parsed = urlparse(api_base)
+    if parsed.netloc.lower() == "openrouter.ai" and api_base.endswith("/api/v1"):
+        return f"{api_base}/models"
+    return (
+        api_base[:-3] + "/models" if api_base.endswith("/v1") else f"{api_base}/models"
+    )
 
 
 def extract_model_names(payload: object) -> list[str]:
     names: set[str] = set()
-    if not isinstance(payload, dict):
-        return []
 
     def add_from_entry(entry: object) -> None:
         if isinstance(entry, dict):
@@ -167,6 +261,14 @@ def extract_model_names(payload: object) -> list[str]:
                 names.add(str(model_id))
         elif isinstance(entry, str):
             names.add(entry)
+
+    if isinstance(payload, list):
+        for entry in payload:
+            add_from_entry(entry)
+        return sorted(names)
+
+    if not isinstance(payload, dict):
+        return []
 
     data = payload.get("data")
     if isinstance(data, list):
@@ -181,7 +283,9 @@ def extract_model_names(payload: object) -> list[str]:
     return sorted(names)
 
 
-def json_response(handler: SimpleHTTPRequestHandler, status: int, payload: dict) -> None:
+def json_response(
+    handler: SimpleHTTPRequestHandler, status: int, payload: dict
+) -> None:
     data = json.dumps(payload, indent=2, ensure_ascii=False).encode("utf-8")
     handler.send_response(status)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
@@ -202,7 +306,10 @@ def load_last_run() -> dict | None:
 
 def save_last_run(payload: dict) -> None:
     LAST_RUN_PATH.parent.mkdir(parents=True, exist_ok=True)
-    LAST_RUN_PATH.write_text(json.dumps(sanitize_public_payload(payload), indent=2, ensure_ascii=False), encoding="utf-8")
+    LAST_RUN_PATH.write_text(
+        json.dumps(sanitize_public_payload(payload), indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
 
 
 @contextmanager
@@ -223,6 +330,113 @@ def mask_secret(value: str | None) -> str:
     if len(secret) <= 4:
         return "*" * len(secret)
     return f"{secret[:2]}{'*' * (len(secret) - 4)}{secret[-2:]}"
+
+
+def is_placeholder_value(value: str | None) -> bool:
+    normalized = str(value or "").strip()
+    if not normalized:
+        return True
+    return normalized.upper() in {
+        "CHANGE_ME",
+        "YOUR_GITHUB_MODELS_PAT_HERE",
+        "YOUR_OPENROUTER_API_KEY_HERE",
+        "YOUR_TOKEN_HERE",
+        "<YOUR-TOKEN>",
+    }
+
+
+def _parse_configured_llms(raw_value: str) -> list[str]:
+    configured: list[str] = []
+    seen: set[str] = set()
+    normalized_value = str(raw_value or "").replace(",", "\n")
+    for raw_line in normalized_value.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line or line in seen:
+            continue
+        seen.add(line)
+        configured.append(line)
+    return configured
+
+
+def load_configured_llms() -> list[str] | None:
+    env_value = str(
+        os.environ.get("LLM_BENCH_CONFIGURED_LLMS")
+        or os.environ.get("CONFIGURED_LLMS")
+        or ""
+    ).strip()
+    if env_value:
+        return _parse_configured_llms(env_value)
+
+    try:
+        if not CONFIGURED_LLMS_PATH.exists():
+            return None
+        return _parse_configured_llms(CONFIGURED_LLMS_PATH.read_text(encoding="utf-8"))
+    except OSError:
+        return None
+
+
+def sync_configured_llms(provider_id: int) -> list[str] | None:
+    configured_llms = load_configured_llms()
+    if configured_llms is None:
+        return None
+    return save_selected_models(provider_id, configured_llms)
+
+
+def configured_provider_from_env() -> dict | None:
+    api_key = str(os.environ.get("LLM_BENCH_API_KEY") or "").strip()
+    provider_type = normalize_provider_type(
+        os.environ.get("LLM_BENCH_PROVIDER_TYPE") or DEFAULT_PROVIDER_TYPE
+    )
+    base_url = str(os.environ.get("LLM_BENCH_BASE_URL") or "").strip()
+    provider_name = str(os.environ.get("LLM_BENCH_PROVIDER_NAME") or "").strip()
+
+    if is_placeholder_value(api_key):
+        openrouter_api_key = str(os.environ.get("OPENROUTER_API_KEY") or "").strip()
+        if not is_placeholder_value(openrouter_api_key):
+            api_key = openrouter_api_key
+            provider_type = "openai"
+            base_url = str(
+                os.environ.get("OPENROUTER_BASE_URL") or OPENROUTER_DEFAULT_BASE_URL
+            ).strip()
+            provider_name = str(
+                os.environ.get("OPENROUTER_PROVIDER_NAME") or OPENROUTER_DEFAULT_NAME
+            ).strip()
+        else:
+            github_api_key = str(os.environ.get("GITHUB_MODELS_API_KEY") or "").strip()
+            if is_placeholder_value(github_api_key):
+                return None
+            api_key = github_api_key
+            provider_type = GITHUB_MODELS_PROVIDER_TYPE
+            base_url = str(
+                os.environ.get("GITHUB_MODELS_BASE_URL")
+                or GITHUB_MODELS_DEFAULT_BASE_URL
+            ).strip()
+            provider_name = str(
+                os.environ.get("GITHUB_MODELS_PROVIDER_NAME")
+                or GITHUB_MODELS_DEFAULT_NAME
+            ).strip()
+
+    if not base_url:
+        if provider_type == GITHUB_MODELS_PROVIDER_TYPE:
+            base_url = GITHUB_MODELS_DEFAULT_BASE_URL
+        else:
+            return None
+    if not provider_name:
+        provider_name = (
+            GITHUB_MODELS_DEFAULT_NAME
+            if provider_type == GITHUB_MODELS_PROVIDER_TYPE
+            else "Configured Provider"
+        )
+
+    init_db()
+    provider = upsert_provider(
+        name=provider_name,
+        base_url=base_url,
+        api_key=api_key,
+        provider_type=provider_type,
+    )
+    sync_configured_llms(provider["id"])
+    return provider
 
 
 ALLOWED_ASSERTION_TYPES = {"equals", "contains", "icontains", "regex"}
@@ -251,7 +465,9 @@ def normalize_assertions(assertions: object) -> list[dict]:
 
 
 def build_promptfoo_assertion(assertion: dict) -> dict:
-    assertion_type = str(assertion.get("type", "contains")).strip().lower() or "contains"
+    assertion_type = (
+        str(assertion.get("type", "contains")).strip().lower() or "contains"
+    )
     value = str(assertion.get("value", "")).strip()
     key = str(assertion.get("key", "")).strip()
     if not key:
@@ -430,20 +646,27 @@ def yaml_testcase_source_map() -> dict[str, dict]:
 
 def sync_yaml_testcases_to_db() -> None:
     for spec in load_yaml_testcase_specs():
-        upsert_testcase(name=spec["name"], prompt_text=spec["prompt_text"], assertions=spec["assertions"])
+        upsert_testcase(
+            name=spec["name"],
+            prompt_text=spec["prompt_text"],
+            assertions=spec["assertions"],
+        )
 
 
 def provider_row_to_dict(row: sqlite3.Row) -> dict:
-    normalized_base = normalize_base_url(row["base_url"])
+    provider_type = normalize_provider_type(row["provider_type"])
+    normalized_base = normalize_base_url(row["base_url"], provider_type=provider_type)
     return {
         "id": row["id"],
         "name": row["name"],
-        "provider_type": row["provider_type"],
+        "provider_type": provider_type,
         "base_url": row["base_url"],
         "api_base_url": normalized_base,
-        "models_url": normalize_models_url(row["base_url"]),
+        "models_url": normalize_models_url(
+            row["base_url"], provider_type=provider_type
+        ),
         "api_key_masked": mask_secret(row["api_key"]),
-        "promptfoo_provider_id": _provider_id_for_promptfoo(row["provider_type"], "<model>"),
+        "promptfoo_provider_id": _provider_id_for_promptfoo(provider_type, "<model>"),
         "selected_models": [],
     }
 
@@ -517,8 +740,12 @@ def init_db() -> None:
             "UPDATE providers SET provider_type = COALESCE(NULLIF(provider_type, ''), ?) WHERE provider_type IS NULL OR provider_type = ''",
             (DEFAULT_PROVIDER_TYPE,),
         )
-        conn.execute("DELETE FROM selected_models WHERE provider_id NOT IN (SELECT id FROM providers)")
-        conn.execute("DELETE FROM benchmark_case_results WHERE provider_id IS NOT NULL AND provider_id NOT IN (SELECT id FROM providers)")
+        conn.execute(
+            "DELETE FROM selected_models WHERE provider_id NOT IN (SELECT id FROM providers)"
+        )
+        conn.execute(
+            "DELETE FROM benchmark_case_results WHERE provider_id IS NOT NULL AND provider_id NOT IN (SELECT id FROM providers)"
+        )
         conn.commit()
     ensure_default_testcase_exists()
 
@@ -549,9 +776,11 @@ def list_providers() -> list[dict]:
     return data
 
 
-def upsert_provider(name: str, base_url: str, api_key: str, provider_type: str = DEFAULT_PROVIDER_TYPE) -> dict:
-    normalized = normalize_base_url(base_url)
-    normalized_provider_type = (provider_type or DEFAULT_PROVIDER_TYPE).strip().lower()
+def upsert_provider(
+    name: str, base_url: str, api_key: str, provider_type: str = DEFAULT_PROVIDER_TYPE
+) -> dict:
+    normalized_provider_type = normalize_provider_type(provider_type)
+    normalized = normalize_base_url(base_url, provider_type=normalized_provider_type)
     provider_name = name.strip()
     if not provider_name:
         raise ValueError("name is required")
@@ -587,10 +816,14 @@ def delete_provider(provider_id: int) -> None:
 def save_selected_models(provider_id: int, model_names: list[str]) -> list[str]:
     cleaned = sorted({name.strip() for name in model_names if name and name.strip()})
     with db_conn() as conn:
-        provider_exists = conn.execute("SELECT 1 FROM providers WHERE id = ?", (provider_id,)).fetchone()
+        provider_exists = conn.execute(
+            "SELECT 1 FROM providers WHERE id = ?", (provider_id,)
+        ).fetchone()
         if provider_exists is None:
             raise ValueError(f"provider {provider_id} does not exist")
-        conn.execute("DELETE FROM selected_models WHERE provider_id = ?", (provider_id,))
+        conn.execute(
+            "DELETE FROM selected_models WHERE provider_id = ?", (provider_id,)
+        )
         conn.executemany(
             "INSERT INTO selected_models (provider_id, model_name) VALUES (?, ?)",
             [(provider_id, model_name) for model_name in cleaned],
@@ -622,6 +855,15 @@ def list_selected_models() -> list[dict]:
     ]
 
 
+def resolve_run_models() -> list[dict]:
+    selected_models = list_selected_models()
+    if selected_models:
+        return selected_models
+    raise ValueError(
+        "No configured models selected. Add model IDs to configured_llms.txt or save a provider selection before running the benchmark"
+    )
+
+
 def list_available_models(providers: list[dict] | None = None) -> list[dict]:
     if providers is None:
         with db_conn() as conn:
@@ -634,7 +876,14 @@ def list_available_models(providers: list[dict] | None = None) -> list[dict]:
     available: list[dict] = []
     seen: set[tuple[int | None, str]] = set()
     for provider in provider_rows:
-        model_names = remote_model_names(str(provider.get("base_url") or ""), str(provider.get("api_key") or ""))
+        provider_type = normalize_provider_type(
+            str(provider.get("provider_type") or DEFAULT_PROVIDER_TYPE)
+        )
+        model_names = remote_model_names(
+            str(provider.get("base_url") or ""),
+            str(provider.get("api_key") or ""),
+            provider_type=provider_type,
+        )
         for model_name in model_names:
             normalized_model = str(model_name or "").strip()
             if not normalized_model:
@@ -647,13 +896,18 @@ def list_available_models(providers: list[dict] | None = None) -> list[dict]:
                 {
                     "provider_id": provider.get("id"),
                     "provider_name": str(provider.get("name") or ""),
-                    "provider_type": str(provider.get("provider_type") or DEFAULT_PROVIDER_TYPE),
+                    "provider_type": provider_type,
                     "base_url": str(provider.get("base_url") or ""),
                     "api_key": str(provider.get("api_key") or ""),
                     "model_name": normalized_model,
                 }
             )
-    available.sort(key=lambda item: (str(item.get("provider_name") or "").lower(), str(item.get("model_name") or "").lower()))
+    available.sort(
+        key=lambda item: (
+            str(item.get("provider_name") or "").lower(),
+            str(item.get("model_name") or "").lower(),
+        )
+    )
     return available
 
 
@@ -679,7 +933,9 @@ def list_testcases() -> list[dict]:
     return items
 
 
-def upsert_testcase(name: str, prompt_text: str, assertions: object, testcase_id: int | None = None) -> dict:
+def upsert_testcase(
+    name: str, prompt_text: str, assertions: object, testcase_id: int | None = None
+) -> dict:
     testcase_name = str(name or "").strip()
     prompt_value = str(prompt_text or "").strip()
     if not testcase_name:
@@ -703,7 +959,11 @@ def upsert_testcase(name: str, prompt_text: str, assertions: object, testcase_id
                 (testcase_name,),
             ).fetchone()
 
-        if existing is not None and existing["prompt_text"] == prompt_value and existing["assertions_json"] == assertions_json:
+        if (
+            existing is not None
+            and existing["prompt_text"] == prompt_value
+            and existing["assertions_json"] == assertions_json
+        ):
             return testcase_row_to_dict(existing)
 
         existing_id = existing["id"] if existing is not None else testcase_id
@@ -738,7 +998,13 @@ def upsert_testcase(name: str, prompt_text: str, assertions: object, testcase_id
                 SET name = ?, prompt_text = ?, assertions_json = ?, content_hash = ?, updated_at = CURRENT_TIMESTAMP
                 WHERE id = ?
                 """,
-                (testcase_name, prompt_value, assertions_json, content_hash, testcase_id),
+                (
+                    testcase_name,
+                    prompt_value,
+                    assertions_json,
+                    content_hash,
+                    testcase_id,
+                ),
             )
             row = conn.execute(
                 "SELECT id, name, prompt_text, assertions_json, content_hash, created_at, updated_at FROM testcases WHERE id = ?",
@@ -758,9 +1024,14 @@ def delete_testcase(testcase_id: int) -> None:
 
 
 def compute_selected_model_trace(selected_model: dict) -> str:
+    provider_type = normalize_provider_type(
+        str(selected_model.get("provider_type") or DEFAULT_PROVIDER_TYPE)
+    )
     payload = {
-        "provider_type": str(selected_model.get("provider_type") or DEFAULT_PROVIDER_TYPE).strip().lower(),
-        "base_url": normalize_base_url(str(selected_model.get("base_url") or "")),
+        "provider_type": provider_type,
+        "base_url": normalize_base_url(
+            str(selected_model.get("base_url") or ""), provider_type=provider_type
+        ),
         "api_key": str(selected_model.get("api_key") or ""),
         "model_name": str(selected_model.get("model_name") or "").strip(),
     }
@@ -768,7 +1039,12 @@ def compute_selected_model_trace(selected_model: dict) -> str:
 
 
 def compute_case_execution_trace(testcase: dict, selected_model: dict) -> str:
-    testcase_hash = str(testcase.get("content_hash") or testcase_content_hash(testcase.get("prompt_text", ""), testcase.get("assertions", [])))
+    testcase_hash = str(
+        testcase.get("content_hash")
+        or testcase_content_hash(
+            testcase.get("prompt_text", ""), testcase.get("assertions", [])
+        )
+    )
     payload = {
         "evaluator": EVALUATOR_TRACE_VERSION,
         "testcase": testcase_hash,
@@ -778,8 +1054,8 @@ def compute_case_execution_trace(testcase: dict, selected_model: dict) -> str:
 
 
 def _provider_id_for_promptfoo(provider_type: str, model_name: str) -> str:
-    normalized = (provider_type or DEFAULT_PROVIDER_TYPE).strip().lower()
-    if normalized in {"ollama", "openai"}:
+    normalized = normalize_provider_type(provider_type)
+    if normalized in {"ollama", "openai", GITHUB_MODELS_PROVIDER_TYPE}:
         return f"openai:chat:{model_name}"
     return f"openai:chat:{model_name}"
 
@@ -792,13 +1068,19 @@ def build_promptfoo_config(selected_models: list[dict], testcases: list[dict]) -
 
     providers = []
     for item in selected_models:
-        provider_type = str(item.get("provider_type") or DEFAULT_PROVIDER_TYPE)
+        provider_type = normalize_provider_type(
+            str(item.get("provider_type") or DEFAULT_PROVIDER_TYPE)
+        )
         providers.append(
             {
-                "id": _provider_id_for_promptfoo(provider_type, str(item["model_name"])),
+                "id": _provider_id_for_promptfoo(
+                    provider_type, str(item["model_name"])
+                ),
                 "label": f"{item['provider_name']} / {item['model_name']}",
                 "config": {
-                    "apiBaseUrl": normalize_base_url(str(item["base_url"])),
+                    "apiBaseUrl": normalize_base_url(
+                        str(item["base_url"]), provider_type=provider_type
+                    ),
                     "apiKey": item.get("api_key", ""),
                     "temperature": 0,
                 },
@@ -810,7 +1092,10 @@ def build_promptfoo_config(selected_models: list[dict], testcases: list[dict]) -
         tests.append(
             {
                 "vars": {"prompt": testcase["prompt_text"]},
-                "assert": [build_promptfoo_assertion(assertion) for assertion in normalize_assertions(testcase["assertions"])],
+                "assert": [
+                    build_promptfoo_assertion(assertion)
+                    for assertion in normalize_assertions(testcase["assertions"])
+                ],
                 "metadata": {
                     "testcase_id": testcase["id"],
                     "testcase_name": testcase["name"],
@@ -828,10 +1113,18 @@ def build_promptfoo_config(selected_models: list[dict], testcases: list[dict]) -
     return json.dumps(config, indent=2, ensure_ascii=False)
 
 
-def remote_model_names(base_url: str, api_key: str) -> list[str]:
-    candidates = [normalize_models_url(base_url)]
-    normalized = normalize_base_url(base_url)
-    candidates.append(normalized[:-3] + "/api/tags")
+def remote_model_names(
+    base_url: str, api_key: str, provider_type: str = DEFAULT_PROVIDER_TYPE
+) -> list[str]:
+    normalized_provider_type = normalize_provider_type(provider_type)
+    candidates = [
+        normalize_models_url(base_url, provider_type=normalized_provider_type)
+    ]
+    normalized = normalize_base_url(base_url, provider_type=normalized_provider_type)
+    if normalized_provider_type != GITHUB_MODELS_PROVIDER_TYPE and normalized.endswith(
+        "/v1"
+    ):
+        candidates.append(normalized[:-3] + "/api/tags")
 
     headers = {"Accept": "application/json"}
     if api_key:
@@ -849,7 +1142,9 @@ def remote_model_names(base_url: str, api_key: str) -> list[str]:
         except HTTPError as e:
             last_error = e
             if e.code in {401, 403}:
-                raise RuntimeError(f"Authentication failed for {url}: {e.code} {e.reason}") from e
+                raise RuntimeError(
+                    f"Authentication failed for {url}: {e.code} {e.reason}"
+                ) from e
         except (URLError, TimeoutError, json.JSONDecodeError) as e:
             last_error = e
 
@@ -857,7 +1152,9 @@ def remote_model_names(base_url: str, api_key: str) -> list[str]:
 
 
 def classify_result_kind(result: dict) -> str:
-    error_text = str(result.get("error") or ((result.get("response") or {}).get("error")) or "")
+    error_text = str(
+        result.get("error") or ((result.get("response") or {}).get("error")) or ""
+    )
     lower_error = error_text.lower()
     if error_text and not any(
         marker in lower_error
@@ -923,13 +1220,17 @@ def detect_failure_mode(error_text: str, response_output: str) -> str:
     return "wrong_answer"
 
 
-def classify_result_subtype(result_kind: str, error_text: str, response_output: str) -> str:
+def classify_result_subtype(
+    result_kind: str, error_text: str, response_output: str
+) -> str:
     if result_kind == "pass":
         return "pass"
     return detect_failure_mode(error_text, response_output)
 
 
-def classify_result_label(result_kind: str, error_text: str, response_output: str) -> str:
+def classify_result_label(
+    result_kind: str, error_text: str, response_output: str
+) -> str:
     failure_mode = classify_result_subtype(result_kind, error_text, response_output)
     if failure_mode == "pass":
         return "Pass"
@@ -946,7 +1247,9 @@ def classify_result_label(result_kind: str, error_text: str, response_output: st
     return "Wrong answer" if result_kind == "fail" else "Provider error"
 
 
-def classify_result_detail(result_kind: str, error_text: str, response_output: str) -> str:
+def classify_result_detail(
+    result_kind: str, error_text: str, response_output: str
+) -> str:
     failure_mode = classify_result_subtype(result_kind, error_text, response_output)
     if failure_mode == "subscription_required":
         return "This model is listed by Ollama Cloud, but the current account tier cannot access it."
@@ -961,7 +1264,9 @@ def classify_result_detail(result_kind: str, error_text: str, response_output: s
     if failure_mode == "missing_keys":
         return "The model returned JSON, but one or more required keys were missing from the response object."
     if result_kind == "error":
-        return error_text or "Promptfoo reported a provider-side error for this testcase."
+        return (
+            error_text or "Promptfoo reported a provider-side error for this testcase."
+        )
     return "The model returned parseable output, but one or more expected facts or values did not match the testcase assertions."
 
 
@@ -986,7 +1291,9 @@ def result_row_to_payload(row: sqlite3.Row) -> dict:
         "success": None if row["success"] is None else bool(row["success"]),
         "score": row["score"],
         "result_kind": result_kind,
-        "result_subtype": classify_result_subtype(result_kind, error_text, response_output),
+        "result_subtype": classify_result_subtype(
+            result_kind, error_text, response_output
+        ),
         "label": classify_result_label(result_kind, error_text, response_output),
         "detail": classify_result_detail(result_kind, error_text, response_output),
         "response_output": response_output,
@@ -1017,7 +1324,11 @@ def is_valid_cached_result(result: dict | None) -> bool:
 
 
 def plan_benchmark_matrix(selected_models: list[dict], testcases: list[dict]) -> dict:
-    traces = [compute_case_execution_trace(testcase, selected_model) for selected_model in selected_models for testcase in testcases]
+    traces = [
+        compute_case_execution_trace(testcase, selected_model)
+        for selected_model in selected_models
+        for testcase in testcases
+    ]
     cached_map = get_cached_case_results(traces)
 
     cached_results: list[dict] = []
@@ -1032,9 +1343,13 @@ def plan_benchmark_matrix(selected_models: list[dict], testcases: list[dict]) ->
             else:
                 pending_cases.append(testcase)
         if pending_cases:
-            pending_by_model.append({"selected_model": selected_model, "testcases": pending_cases})
+            pending_by_model.append(
+                {"selected_model": selected_model, "testcases": pending_cases}
+            )
 
-    cached_results.sort(key=lambda item: (item["testcase_name"].lower(), item["model_name"].lower()))
+    cached_results.sort(
+        key=lambda item: (item["testcase_name"].lower(), item["model_name"].lower())
+    )
     return {
         "cached_results": cached_results,
         "pending_by_model": pending_by_model,
@@ -1043,7 +1358,13 @@ def plan_benchmark_matrix(selected_models: list[dict], testcases: list[dict]) ->
     }
 
 
-def record_case_result(testcase: dict, selected_model: dict, execution_trace: str, result: dict, run_id: int | None = None) -> dict:
+def record_case_result(
+    testcase: dict,
+    selected_model: dict,
+    execution_trace: str,
+    result: dict,
+    run_id: int | None = None,
+) -> dict:
     provider_trace = compute_selected_model_trace(selected_model)
     result_kind = classify_result_kind(result)
     response = result.get("response") or {}
@@ -1088,12 +1409,19 @@ def record_case_result(testcase: dict, selected_model: dict, execution_trace: st
                 testcase["id"],
                 testcase["name"],
                 testcase["prompt_text"],
-                json.dumps(normalize_assertions(testcase["assertions"]), ensure_ascii=False),
+                json.dumps(
+                    normalize_assertions(testcase["assertions"]), ensure_ascii=False
+                ),
                 testcase["content_hash"],
                 selected_model.get("provider_id"),
                 selected_model["provider_name"],
                 str(selected_model.get("provider_type") or DEFAULT_PROVIDER_TYPE),
-                normalize_base_url(str(selected_model["base_url"])),
+                normalize_base_url(
+                    str(selected_model["base_url"]),
+                    provider_type=str(
+                        selected_model.get("provider_type") or DEFAULT_PROVIDER_TYPE
+                    ),
+                ),
                 selected_model["model_name"],
                 provider_trace,
                 None if success is None else int(bool(success)),
@@ -1147,7 +1475,9 @@ def build_latest_run_payload(
         "exit_code": exit_code,
         "stdout": "\n\n".join(chunk for chunk in stdout_chunks if chunk),
         "stderr": "\n\n".join(chunk for chunk in stderr_chunks if chunk),
-        "selected_models": [selected_model_public_dict(item) for item in selected_models],
+        "selected_models": [
+            selected_model_public_dict(item) for item in selected_models
+        ],
         "testcases": [
             {
                 "id": testcase["id"],
@@ -1158,7 +1488,15 @@ def build_latest_run_payload(
             }
             for testcase in testcases
         ],
-        "matrix_results": sanitize_public_payload(sorted(matrix_results, key=lambda item: (item["testcase_name"].lower(), item["model_name"].lower()))),
+        "matrix_results": sanitize_public_payload(
+            sorted(
+                matrix_results,
+                key=lambda item: (
+                    item["testcase_name"].lower(),
+                    item["model_name"].lower(),
+                ),
+            )
+        ),
         "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "report_summary": {
             "selected_model_count": len(selected_models),
@@ -1174,15 +1512,21 @@ def build_latest_run_payload(
     }
 
 
-def get_latest_run_payload(selected_models: list[dict] | None = None, testcases: list[dict] | None = None) -> dict | None:
+def get_latest_run_payload(
+    selected_models: list[dict] | None = None, testcases: list[dict] | None = None
+) -> dict | None:
     if selected_models is not None and testcases is not None:
-        plan = plan_benchmark_matrix(selected_models=selected_models, testcases=testcases)
+        plan = plan_benchmark_matrix(
+            selected_models=selected_models, testcases=testcases
+        )
         if plan["cached_results"]:
             return build_latest_run_payload(
                 selected_models=selected_models,
                 testcases=testcases,
                 matrix_results=plan["cached_results"],
-                stdout_chunks=[f"Served {len(plan['cached_results'])} cached testcase/model results from SQLite."],
+                stdout_chunks=[
+                    f"Served {len(plan['cached_results'])} cached testcase/model results from SQLite."
+                ],
                 stderr_chunks=[],
                 exit_code=0,
                 skipped_count=len(plan["cached_results"]),
@@ -1191,7 +1535,9 @@ def get_latest_run_payload(selected_models: list[dict] | None = None, testcases:
             )
 
     with db_conn() as conn:
-        row = conn.execute("SELECT payload_json FROM benchmark_runs ORDER BY id DESC LIMIT 1").fetchone()
+        row = conn.execute(
+            "SELECT payload_json FROM benchmark_runs ORDER BY id DESC LIMIT 1"
+        ).fetchone()
     if row is not None:
         try:
             payload = json.loads(row["payload_json"])
@@ -1220,11 +1566,17 @@ def build_testcase_manifest_entry(aggregate: dict) -> dict:
 
 
 def build_testcase_aggregate_payload(testcase: dict, model_results: list[dict]) -> dict:
-    ordered_results = sorted(model_results, key=lambda item: str(item.get("model_name") or "").lower())
+    ordered_results = sorted(
+        model_results, key=lambda item: str(item.get("model_name") or "").lower()
+    )
     pass_count = sum(1 for item in ordered_results if item.get("result_kind") == "pass")
     fail_count = sum(1 for item in ordered_results if item.get("result_kind") == "fail")
-    error_count = sum(1 for item in ordered_results if item.get("result_kind") == "error")
-    last_updated = max((str(item.get("saved_at") or "") for item in ordered_results), default="")
+    error_count = sum(
+        1 for item in ordered_results if item.get("result_kind") == "error"
+    )
+    last_updated = max(
+        (str(item.get("saved_at") or "") for item in ordered_results), default=""
+    )
     aggregate = {
         "schema_version": RESULTS_SCHEMA_VERSION,
         "testcase": {
@@ -1237,7 +1589,9 @@ def build_testcase_aggregate_payload(testcase: dict, model_results: list[dict]) 
             "description": testcase.get("source_description") or "",
             "prompt_text": testcase.get("prompt_text"),
             "assertions": sanitize_public_payload(testcase.get("assertions") or []),
-            "expected_result": testcase_expected_result(testcase.get("assertions") or []),
+            "expected_result": testcase_expected_result(
+                testcase.get("assertions") or []
+            ),
             "created_at": testcase.get("created_at"),
             "updated_at": testcase.get("updated_at"),
         },
@@ -1256,28 +1610,44 @@ def build_testcase_aggregate_payload(testcase: dict, model_results: list[dict]) 
     return aggregate
 
 
-def publish_testcase_result_artifacts(testcases: list[dict], matrix_results: list[dict]) -> dict:
+def publish_testcase_result_artifacts(
+    testcases: list[dict], matrix_results: list[dict]
+) -> dict:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     results_by_hash: dict[str, list[dict]] = {}
     for result in matrix_results:
-        results_by_hash.setdefault(str(result.get("content_hash") or ""), []).append(result)
+        results_by_hash.setdefault(str(result.get("content_hash") or ""), []).append(
+            result
+        )
 
     aggregates: list[dict] = []
     keep_files = {"manifest.json"}
     for testcase in testcases:
         content_hash = str(testcase.get("content_hash") or "")
-        aggregate = build_testcase_aggregate_payload(testcase, results_by_hash.get(content_hash, []))
+        aggregate = build_testcase_aggregate_payload(
+            testcase, results_by_hash.get(content_hash, [])
+        )
         aggregates.append(aggregate)
         file_name = str(aggregate["file_name"])
         keep_files.add(file_name)
-        (RESULTS_DIR / file_name).write_text(json.dumps(sanitize_public_payload(aggregate), indent=2, ensure_ascii=False), encoding="utf-8")
+        (RESULTS_DIR / file_name).write_text(
+            json.dumps(
+                sanitize_public_payload(aggregate), indent=2, ensure_ascii=False
+            ),
+            encoding="utf-8",
+        )
 
     manifest = {
         "schema_version": RESULTS_SCHEMA_VERSION,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "testcases": sorted((build_testcase_manifest_entry(item) for item in aggregates), key=lambda item: str(item.get("name") or "").lower()),
+        "testcases": sorted(
+            (build_testcase_manifest_entry(item) for item in aggregates),
+            key=lambda item: str(item.get("name") or "").lower(),
+        ),
     }
-    (RESULTS_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    (RESULTS_DIR / "manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
     for child in RESULTS_DIR.glob("*.json"):
         if child.name not in keep_files:
@@ -1288,15 +1658,31 @@ def publish_testcase_result_artifacts(testcases: list[dict], matrix_results: lis
 def load_results_manifest() -> dict:
     manifest_path = RESULTS_DIR / "manifest.json"
     if not manifest_path.exists():
-        return {"schema_version": RESULTS_SCHEMA_VERSION, "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "testcases": []}
+        return {
+            "schema_version": RESULTS_SCHEMA_VERSION,
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "testcases": [],
+        }
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    return sanitize_public_payload(payload) if isinstance(payload, dict) else {"schema_version": RESULTS_SCHEMA_VERSION, "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "testcases": []}
+    return (
+        sanitize_public_payload(payload)
+        if isinstance(payload, dict)
+        else {
+            "schema_version": RESULTS_SCHEMA_VERSION,
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "testcases": [],
+        }
+    )
 
 
 def load_testcase_result_payload(identifier: str) -> dict | None:
     manifest = load_results_manifest()
     for item in manifest.get("testcases", []):
-        if identifier in {str(item.get("content_hash") or ""), str(item.get("slug") or ""), str(item.get("file") or "")}:
+        if identifier in {
+            str(item.get("content_hash") or ""),
+            str(item.get("slug") or ""),
+            str(item.get("file") or ""),
+        }:
             file_name = str(item.get("file") or "")
             if not file_name:
                 return None
@@ -1304,7 +1690,9 @@ def load_testcase_result_payload(identifier: str) -> dict | None:
             if not target.exists():
                 return None
             payload = json.loads(target.read_text(encoding="utf-8"))
-            return sanitize_public_payload(payload) if isinstance(payload, dict) else None
+            return (
+                sanitize_public_payload(payload) if isinstance(payload, dict) else None
+            )
     return None
 
 
@@ -1313,10 +1701,14 @@ def run_promptfoo_for_model(selected_model: dict, testcases: list[dict]) -> dict
     temp_output: str | None = None
     try:
         config_text = build_promptfoo_config([selected_model], testcases)
-        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
+        with tempfile.NamedTemporaryFile(
+            "w", suffix=".json", delete=False, encoding="utf-8"
+        ) as tmp:
             tmp.write(config_text)
             temp_config = tmp.name
-        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as out_file:
+        with tempfile.NamedTemporaryFile(
+            "w", suffix=".json", delete=False, encoding="utf-8"
+        ) as out_file:
             temp_output = out_file.name
         cmd = PROMPTFOO_CMD + [temp_config, "--output", temp_output, "--no-table"]
         proc = subprocess.run(
@@ -1337,8 +1729,16 @@ def run_promptfoo_for_model(selected_model: dict, testcases: list[dict]) -> dict
             "eval_payload": eval_payload,
         }
     except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
-        stderr = exc.stderr.decode("utf-8", errors="replace") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        stdout = (
+            exc.stdout.decode("utf-8", errors="replace")
+            if isinstance(exc.stdout, bytes)
+            else (exc.stdout or "")
+        )
+        stderr = (
+            exc.stderr.decode("utf-8", errors="replace")
+            if isinstance(exc.stderr, bytes)
+            else (exc.stderr or "")
+        )
         return {
             "exit_code": 124,
             "stdout": stdout,
@@ -1353,18 +1753,34 @@ def run_promptfoo_for_model(selected_model: dict, testcases: list[dict]) -> dict
             Path(temp_output).unlink(missing_ok=True)
 
 
-def extract_promptfoo_case_results(eval_payload: dict, testcase_lookup: dict[int, dict], selected_model: dict, run_id: int | None = None) -> list[dict]:
-    payload_results = (((eval_payload or {}).get("results") or {}).get("results") or [])
+def extract_promptfoo_case_results(
+    eval_payload: dict,
+    testcase_lookup: dict[int, dict],
+    selected_model: dict,
+    run_id: int | None = None,
+) -> list[dict]:
+    payload_results = ((eval_payload or {}).get("results") or {}).get("results") or []
     saved: list[dict] = []
     for item in payload_results:
-        metadata = (((item.get("testCase") or {}).get("metadata") or {}))
+        metadata = (item.get("testCase") or {}).get("metadata") or {}
         testcase_id = metadata.get("testcase_id")
-        testcase_key: int | None = int(testcase_id) if isinstance(testcase_id, int) or (isinstance(testcase_id, str) and testcase_id.isdigit()) else None
-        testcase = testcase_lookup.get(testcase_key) if testcase_key is not None else None
+        testcase_key: int | None = (
+            int(testcase_id)
+            if isinstance(testcase_id, int)
+            or (isinstance(testcase_id, str) and testcase_id.isdigit())
+            else None
+        )
+        testcase = (
+            testcase_lookup.get(testcase_key) if testcase_key is not None else None
+        )
         if testcase is None:
             continue
         execution_trace = compute_case_execution_trace(testcase, selected_model)
-        saved.append(record_case_result(testcase, selected_model, execution_trace, item, run_id=run_id))
+        saved.append(
+            record_case_result(
+                testcase, selected_model, execution_trace, item, run_id=run_id
+            )
+        )
     return saved
 
 
@@ -1372,9 +1788,18 @@ def _is_local_api_path(path: str) -> bool:
     if path in LOCAL_API_PATHS:
         return True
     parts = [part for part in path.split("/") if part]
-    if len(parts) == 3 and parts[:2] in (["api", "providers"], ["api", "testcases"]) and parts[2].isdigit():
+    if (
+        len(parts) == 3
+        and parts[:2] in (["api", "providers"], ["api", "testcases"])
+        and parts[2].isdigit()
+    ):
         return True
-    if len(parts) == 4 and parts[:2] == ["api", "providers"] and parts[2].isdigit() and parts[3] == "models":
+    if (
+        len(parts) == 4
+        and parts[:2] == ["api", "providers"]
+        and parts[2].isdigit()
+        and parts[3] == "models"
+    ):
         return True
     if len(parts) == 4 and parts[:3] == ["api", "results", "testcases"]:
         return True
@@ -1419,10 +1844,14 @@ class Handler(SimpleHTTPRequestHandler):
             providers = list_providers()
             selected = list_selected_models()
             testcases = list_testcases()
-            primary = testcases[0] if testcases else {
-                "prompt_text": BENCHMARK_PROMPT,
-                "assertions": BENCHMARK_ASSERTIONS,
-            }
+            primary = (
+                testcases[0]
+                if testcases
+                else {
+                    "prompt_text": BENCHMARK_PROMPT,
+                    "assertions": BENCHMARK_ASSERTIONS,
+                }
+            )
             payload = {
                 "ok": True,
                 "provider_count": len(providers),
@@ -1430,11 +1859,21 @@ class Handler(SimpleHTTPRequestHandler):
                 "testcase_count": len(testcases),
                 "benchmark_prompt": primary["prompt_text"],
                 "expected_results": primary["assertions"],
-                "expected_signals": [assertion["value"] for assertion in primary["assertions"]],
-                "promptfoo_cmd": PROMPTFOO_CMD + ["<generated-config.json>", "--output", "<generated-results.json>", "--no-table"],
+                "expected_signals": [
+                    assertion["value"] for assertion in primary["assertions"]
+                ],
+                "promptfoo_cmd": PROMPTFOO_CMD
+                + [
+                    "<generated-config.json>",
+                    "--output",
+                    "<generated-results.json>",
+                    "--no-table",
+                ],
                 "viewer_url": f"http://127.0.0.1:{VIEW_PORT}",
                 "viewer_path": VIEW_PREFIX,
-                "last_run": get_latest_run_payload(selected_models=selected, testcases=testcases),
+                "last_run": get_latest_run_payload(
+                    selected_models=selected, testcases=testcases
+                ),
             }
             json_response(self, HTTPStatus.OK, payload)
             return
@@ -1450,7 +1889,15 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/api/results/manifest":
             testcases = list_testcases()
             selected = list_selected_models()
-            publish_testcase_result_artifacts(testcases, (get_latest_run_payload(selected_models=selected, testcases=testcases) or {}).get("matrix_results", []))
+            publish_testcase_result_artifacts(
+                testcases,
+                (
+                    get_latest_run_payload(
+                        selected_models=selected, testcases=testcases
+                    )
+                    or {}
+                ).get("matrix_results", []),
+            )
             json_response(self, HTTPStatus.OK, load_results_manifest())
             return
 
@@ -1458,10 +1905,20 @@ class Handler(SimpleHTTPRequestHandler):
             identifier = path.rsplit("/", 1)[-1]
             testcases = list_testcases()
             selected = list_selected_models()
-            publish_testcase_result_artifacts(testcases, (get_latest_run_payload(selected_models=selected, testcases=testcases) or {}).get("matrix_results", []))
+            publish_testcase_result_artifacts(
+                testcases,
+                (
+                    get_latest_run_payload(
+                        selected_models=selected, testcases=testcases
+                    )
+                    or {}
+                ).get("matrix_results", []),
+            )
             payload = load_testcase_result_payload(identifier)
             if payload is None:
-                json_response(self, HTTPStatus.NOT_FOUND, {"error": "testcase result not found"})
+                json_response(
+                    self, HTTPStatus.NOT_FOUND, {"error": "testcase result not found"}
+                )
             else:
                 json_response(self, HTTPStatus.OK, payload)
             return
@@ -1474,10 +1931,14 @@ class Handler(SimpleHTTPRequestHandler):
                     (provider_id,),
                 ).fetchone()
             if row is None:
-                json_response(self, HTTPStatus.NOT_FOUND, {"error": "provider not found"})
+                json_response(
+                    self, HTTPStatus.NOT_FOUND, {"error": "provider not found"}
+                )
                 return
             try:
-                models = remote_model_names(row["base_url"], row["api_key"])
+                models = remote_model_names(
+                    row["base_url"], row["api_key"], provider_type=row["provider_type"]
+                )
             except Exception as exc:
                 json_response(self, HTTPStatus.BAD_GATEWAY, {"error": str(exc)})
                 return
@@ -1523,9 +1984,17 @@ class Handler(SimpleHTTPRequestHandler):
                     str(payload.get("name", "")).strip(),
                     str(payload.get("base_url", "")).strip(),
                     str(payload.get("api_key", "")),
-                    provider_type=str(payload.get("provider_type", DEFAULT_PROVIDER_TYPE)).strip().lower(),
+                    provider_type=str(
+                        payload.get("provider_type", DEFAULT_PROVIDER_TYPE)
+                    )
+                    .strip()
+                    .lower(),
                 )
-                json_response(self, HTTPStatus.OK, {"provider": item, "providers": list_providers()})
+                json_response(
+                    self,
+                    HTTPStatus.OK,
+                    {"provider": item, "providers": list_providers()},
+                )
             except Exception as exc:
                 json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
             return
@@ -1540,7 +2009,11 @@ class Handler(SimpleHTTPRequestHandler):
                     assertions=payload.get("assertions", []),
                     testcase_id=int(testcase_id) if testcase_id is not None else None,
                 )
-                json_response(self, HTTPStatus.OK, {"testcase": item, "testcases": list_testcases()})
+                json_response(
+                    self,
+                    HTTPStatus.OK,
+                    {"testcase": item, "testcases": list_testcases()},
+                )
             except Exception as exc:
                 json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
             return
@@ -1552,8 +2025,14 @@ class Handler(SimpleHTTPRequestHandler):
                 model_names = payload.get("model_names", [])
                 if not isinstance(model_names, list):
                     raise ValueError("model_names must be a list")
-                saved = save_selected_models(provider_id, [str(name) for name in model_names])
-                json_response(self, HTTPStatus.OK, {"provider_id": provider_id, "selected_models": saved})
+                saved = save_selected_models(
+                    provider_id, [str(name) for name in model_names]
+                )
+                json_response(
+                    self,
+                    HTTPStatus.OK,
+                    {"provider_id": provider_id, "selected_models": saved},
+                )
             except Exception as exc:
                 json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)})
             return
@@ -1562,15 +2041,19 @@ class Handler(SimpleHTTPRequestHandler):
             try:
                 providers = list_providers()
                 if not providers:
-                    raise ValueError("Add at least one provider before running the benchmark")
-                available_models = list_available_models()
-                if not available_models:
-                    raise ValueError("No models were returned by the configured providers")
+                    raise ValueError(
+                        "Add at least one provider before running the benchmark"
+                    )
+                selected_models = resolve_run_models()
                 testcases = list_testcases()
                 if not testcases:
-                    raise ValueError("Create at least one testcase before running the benchmark")
+                    raise ValueError(
+                        "Create at least one testcase before running the benchmark"
+                    )
 
-                plan = plan_benchmark_matrix(selected_models=available_models, testcases=testcases)
+                plan = plan_benchmark_matrix(
+                    selected_models=selected_models, testcases=testcases
+                )
                 matrix_results = list(plan["cached_results"])
                 stdout_chunks: list[str] = []
                 stderr_chunks: list[str] = []
@@ -1599,12 +2082,19 @@ class Handler(SimpleHTTPRequestHandler):
                         matrix_results.extend(fresh_rows)
                         fresh_count += len(fresh_rows)
 
-                run_state = "cached" if fresh_count == 0 else ("mixed" if plan["cached_count"] else "fresh")
+                run_state = (
+                    "cached"
+                    if fresh_count == 0
+                    else ("mixed" if plan["cached_count"] else "fresh")
+                )
                 payload = build_latest_run_payload(
-                    selected_models=available_models,
+                    selected_models=selected_models,
                     testcases=testcases,
                     matrix_results=matrix_results,
-                    stdout_chunks=stdout_chunks or [f"Served {plan['cached_count']} valid cached testcase/model results from SQLite."],
+                    stdout_chunks=stdout_chunks
+                    or [
+                        f"Served {plan['cached_count']} valid cached testcase/model results from SQLite."
+                    ],
                     stderr_chunks=stderr_chunks,
                     exit_code=exit_code,
                     skipped_count=plan["cached_count"],
@@ -1613,7 +2103,9 @@ class Handler(SimpleHTTPRequestHandler):
                 )
                 save_last_run(payload)
                 save_benchmark_run_payload(payload)
-                publish_testcase_result_artifacts(testcases, payload.get("matrix_results", []))
+                publish_testcase_result_artifacts(
+                    testcases, payload.get("matrix_results", [])
+                )
                 json_response(self, HTTPStatus.OK, payload)
             except Exception as exc:
                 payload = {"error": str(exc)}
@@ -1630,12 +2122,16 @@ class Handler(SimpleHTTPRequestHandler):
         provider_id = self._provider_id_from_path(path)
         if provider_id is not None:
             delete_provider(provider_id)
-            json_response(self, HTTPStatus.OK, {"ok": True, "providers": list_providers()})
+            json_response(
+                self, HTTPStatus.OK, {"ok": True, "providers": list_providers()}
+            )
             return
         testcase_id = self._testcase_id_from_path(path)
         if testcase_id is not None:
             delete_testcase(testcase_id)
-            json_response(self, HTTPStatus.OK, {"ok": True, "testcases": list_testcases()})
+            json_response(
+                self, HTTPStatus.OK, {"ok": True, "testcases": list_testcases()}
+            )
             return
         self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -1666,7 +2162,7 @@ class Handler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         upstream_path = parsed.path
         if upstream_path.startswith(f"{VIEW_PREFIX}/"):
-            upstream_path = upstream_path[len(VIEW_PREFIX):]
+            upstream_path = upstream_path[len(VIEW_PREFIX) :]
             if not upstream_path:
                 upstream_path = "/"
         query = f"?{parsed.query}" if parsed.query else ""
@@ -1681,7 +2177,8 @@ class Handler(SimpleHTTPRequestHandler):
         headers = {
             key: value
             for key, value in self.headers.items()
-            if key.lower() not in {"host", "content-length", "connection", "accept-encoding"}
+            if key.lower()
+            not in {"host", "content-length", "connection", "accept-encoding"}
         }
 
         last_error: Exception | None = None
@@ -1693,7 +2190,12 @@ class Handler(SimpleHTTPRequestHandler):
                 payload = upstream.read()
                 self.send_response(upstream.status, upstream.reason)
                 for key, value in upstream.getheaders():
-                    if key.lower() in {"transfer-encoding", "connection", "content-encoding", "content-length"}:
+                    if key.lower() in {
+                        "transfer-encoding",
+                        "connection",
+                        "content-encoding",
+                        "content-length",
+                    }:
                         continue
                     self.send_header(key, value)
                 self.send_header("Content-Length", str(len(payload)))
@@ -1704,7 +2206,12 @@ class Handler(SimpleHTTPRequestHandler):
                     except (BrokenPipeError, ConnectionResetError):
                         pass
                 return
-            except (ConnectionRefusedError, ConnectionResetError, TimeoutError, OSError) as exc:
+            except (
+                ConnectionRefusedError,
+                ConnectionResetError,
+                TimeoutError,
+                OSError,
+            ) as exc:
                 last_error = exc
                 time.sleep(0.25 * (attempt + 1))
             finally:
@@ -1726,6 +2233,7 @@ class Handler(SimpleHTTPRequestHandler):
 def main() -> None:
     SITE.mkdir(exist_ok=True)
     init_db()
+    configured_provider_from_env()
     viewer = start_promptfoo_viewer()
     server = ThreadingHTTPServer((BIND_HOST, PORT), Handler)
     print(f"Serving TI4 benchmark UI on http://{BIND_HOST}:{PORT}")
