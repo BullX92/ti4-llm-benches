@@ -1,0 +1,13 @@
+{
+  "name": "ti4-llm-benches",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "bench": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest eval --config promptfooconfig.reasoning.yaml --env-file .env --output results.reasoning.json",
+    "bench:reasoning": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest eval --config promptfooconfig.reasoning.yaml --env-file .env --output results.reasoning.json",
+    "bench:models": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest eval --config promptfooconfig.models.yaml --env-file .env --output results.models.json",
+    "view": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest view --no",
+    "report": "node generate-report.mjs",
+    "report:open": "node generate-report.mjs && start report.html"
+  }
+}

@@ -8,5 +8,8 @@ venv/
 *.sqlite3
 *.db
 node_modules/
+.promptfoo/
+results.json
+promptfoo-errors.log
 .DS_Store
 

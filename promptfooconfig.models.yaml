@@ -1,0 +1,173 @@
+description: TI4 benchmark model comparison baseline
+
+providers:
+  - id: openai:chat:openai/gpt-4.1-nano
+    label: gpt-4.1-nano
+    config: &flagship_config
+      apiBaseUrl: https://openrouter.ai/api/v1
+      apiKeyEnvar: OPENROUTER_API_KEY
+      temperature: 0.1
+      max_tokens: 1000
+      response_format:
+        type: json_schema
+        json_schema:
+          name: flagship_answer
+          strict: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              faction:
+                type: string
+              expansion:
+                type: string
+              name:
+                type: string
+              cost:
+                type: string
+              combat:
+                type: string
+              move:
+                type: string
+              capacity:
+                type: string
+              sustain_damage:
+                type: string
+              ability:
+                type: string
+            required:
+              - faction
+              - expansion
+              - name
+              - cost
+              - combat
+              - move
+              - capacity
+              - sustain_damage
+              - ability
+  - id: openai:chat:openai/gpt-4.1-mini
+    label: gpt-4.1-mini
+    config:
+      <<: *flagship_config
+  - id: openai:chat:openai/gpt-5.4-mini
+    label: gpt-5.4-mini
+    config:
+      <<: *flagship_config
+  - id: openai:chat:openai/gpt-5.4
+    label: gpt-5.4
+    config:
+      <<: *flagship_config
+
+prompts:
+  - |
+    Answer the question with JSON only.
+    Use exactly the schema defined by the response format.
+    Do not include markdown or any extra text.
+
+    {{question}}
+
+tests:
+  - vars:
+      question: |-
+        What is the name of the Federation of Sol flagship in Twilight Imperium 4, and what are its stats and ability?
+    metadata:
+      name: Sol flagship reference
+      description: >-
+        Baseline flagship testcase for a classic base-game faction. The model should
+        return the Sol flagship identity, core stats, and the infantry-placement
+        ability as strict structured JSON.
+    assert:
+      - type: javascript
+        value: output && typeof output === 'object' && !Array.isArray(output)
+      - type: javascript
+        value: output.faction === 'The Federation of Sol'
+      - type: javascript
+        value: output.expansion === 'Base Game'
+      - type: javascript
+        value: output.name === 'Genesis'
+      - type: javascript
+        value: output.cost === '8'
+      - type: javascript
+        value: /^5\s*\(x2\)$|^5x2$/i.test(output.combat)
+      - type: javascript
+        value: output.move === '1'
+      - type: javascript
+        value: output.capacity === '12'
+      - type: javascript
+        value: typeof output.sustain_damage === 'string' && output.sustain_damage.toLowerCase() === 'yes'
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('place 1 infantry')
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('status phase')
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('space area')
+  - vars:
+      question: |-
+        In Twilight Imperium 4 Prophecy of Kings, what is the flagship of the Argent Flight?
+        Return the faction, expansion source, flagship name, cost, combat, move, capacity,
+        sustain damage status, and the flagship ability.
+    metadata:
+      name: Argent flagship detailed reference (Prophecy of Kings)
+      description: >-
+        YAML-sourced Prophecy of Kings testcase for Argent Flight. Verifies the
+        flagship statline plus the space-cannon prevention clause.
+      sources:
+        - https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/argent.tex
+    assert:
+      - type: javascript
+        value: output && typeof output === 'object' && !Array.isArray(output)
+      - type: javascript
+        value: output.faction === 'The Argent Flight'
+      - type: javascript
+        value: output.expansion === 'Prophecy of Kings'
+      - type: javascript
+        value: output.name === 'Quetzecoatl'
+      - type: javascript
+        value: output.cost === '8'
+      - type: javascript
+        value: /^7\s*\(x2\)$|^7x2$/i.test(output.combat)
+      - type: javascript
+        value: output.move === '1'
+      - type: javascript
+        value: output.capacity === '3'
+      - type: javascript
+        value: typeof output.sustain_damage === 'string' && output.sustain_damage.toLowerCase() === 'yes'
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('cannot use space cannon')
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('your ships in this system')
+  - vars:
+      question: |-
+        In Twilight Imperium 4 Thunders Edge, what is the flagship of the Crimson Rebellion?
+        Return the faction, expansion source, flagship name, cost, combat, move, capacity,
+        sustain damage status, and the flagship ability.
+    metadata:
+      name: Crimson flagship detailed reference (Thunders Edge)
+      description: >-
+        YAML-sourced Thunders Edge testcase for the Crimson Rebellion flagship.
+        Verifies breach-related ability wording in addition to the flagship statline.
+      sources:
+        - https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/crimson.tex
+    assert:
+      - type: javascript
+        value: output && typeof output === 'object' && !Array.isArray(output)
+      - type: javascript
+        value: output.faction === 'The Crimson Rebellion'
+      - type: javascript
+        value: output.expansion === 'Thunders Edge'
+      - type: javascript
+        value: output.name === 'Quietus'
+      - type: javascript
+        value: output.cost === '8'
+      - type: javascript
+        value: /^5\s*\(x2\)$|^5x2$/i.test(output.combat)
+      - type: javascript
+        value: output.move === '1'
+      - type: javascript
+        value: output.capacity === '3'
+      - type: javascript
+        value: typeof output.sustain_damage === 'string' && output.sustain_damage.toLowerCase() === 'yes'
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('active breach')
+      - type: javascript
+        value: typeof output.ability === 'string' && output.ability.toLowerCase().includes('lose all their unit abilities')
