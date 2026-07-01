@@ -1,7 +1,7 @@
 # TI4 Promptfoo Benchmark
 
-Minimales `promptfoo`-Setup fuer TI4-Flagship-Benchmarks via OpenRouter.
-Die Antwort wird per `response_format: json_schema` als strukturiertes JSON erzwungen und feldweise geprueft.
+Minimales `promptfoo`-Setup fuer TI4-Benchmarks via OpenRouter.
+Die Modelle werden per Prompt zu JSON-Ausgaben gezwungen, die Assertions parsen und pruefen dieses JSON feldweise.
 
 ## Voraussetzungen
 
@@ -12,18 +12,28 @@ Die Antwort wird per `response_format: json_schema` als strukturiertes JSON erzw
 ## Start
 
 ```powershell
-npm run bench
+npx --yes promptfoo@latest eval --config promptfooconfig.reasoning.yaml --env-file .env --output results.reasoning.json
+npx --yes promptfoo@latest eval --config promptfooconfig.models.yaml --env-file .env --output results.models.json
+npx --yes promptfoo@latest view --no
+```
+
+`promptfooconfig.reasoning.yaml` schreibt nach `results.reasoning.json`.
+`promptfooconfig.models.yaml` schreibt nach `results.models.json`.
+Alle Runs landen zusaetzlich in der Promptfoo-UI-Historie.
+`promptfoo view` startet die lokale Promptfoo-UI auf Port `15500`.
+
+Optional gibt es weiterhin die npm-Wrapper:
+
+```powershell
 npm run bench:reasoning
 npm run bench:models
 npm run view
 ```
 
-`npm run bench` und `npm run bench:reasoning` verwenden `promptfooconfig.reasoning.yaml`.
-`npm run bench:models` verwendet `promptfooconfig.models.yaml`.
-`npm run bench` und `npm run bench:reasoning` schreiben nach `results.reasoning.json`.
-`npm run bench:models` schreibt nach `results.models.json`.
-Alle Runs landen zusaetzlich in der Promptfoo-UI-Historie.
-`npm run view` startet die lokale Promptfoo-UI auf Port `15500`.
+Es gibt bewusst nur zwei gepflegte Promptfoo-Configs:
+
+- `promptfooconfig.reasoning.yaml` fuer den Vergleich mit und ohne Reasoning
+- `promptfooconfig.models.yaml` fuer den Modellvergleich
 
 ## Ein-Klick-Start
 
@@ -36,27 +46,44 @@ Wenn die lokale Promptfoo-Datenbank defekt ist, legt das Script automatisch ein 
 
 ## Beschlossene Entscheidungen
 
-- Benchmark-Runner: `promptfoo` via `npx promptfoo@latest`
+- Benchmark-Runner: `promptfoo eval` via `npx promptfoo@latest`
 - Provider: OpenRouter ueber `OPENROUTER_API_KEY`
-- Ergebnisformat: strukturiertes JSON per `response_format: json_schema`
+- Ergebnisformat: JSON per Promptvorgabe
 - Validierung: feldweise Assertions in den Promptfoo-Configs
 - `promptfooconfig.reasoning.yaml`:
   - `openai/gpt-5.4` mit `reasoning.effort=low`
   - `openai/gpt-5.4` mit `reasoning.effort=medium`
   - `openai/gpt-5.4` mit `reasoning.effort=high`
+  - `anthropic/claude-sonnet-5`
 - `promptfooconfig.models.yaml`:
   - `openai/gpt-4.1-nano`
   - `openai/gpt-4.1-mini`
   - `openai/gpt-5.4-mini`
-  - `openai/gpt-5.4`
+  - `anthropic/claude-sonnet-5`
+  - `google/gemini-3.5-flash`
+  - `deepseek/deepseek-v3.2`
+  - `qwen/qwen3.7-plus`
+  - `mistralai/mistral-small-2603`
+  - `x-ai/grok-4.20`
+  - `deepseek/deepseek-v4-flash`
+  - `minimax/minimax-m3`
+  - `deepseek/deepseek-v4-pro`
+  - `z-ai/glm-5.2`
+  - `xiaomi/mimo-v2.5`
+  - `google/gemini-3.1-pro-preview`
+  - `qwen/qwen3.7-max`
+  - `moonshotai/kimi-k2.6`
+  - `anthropic/claude-opus-4.8`
+  - `openai/gpt-5.5` (most expensive requested model; configured last)
 
 ## Aktuelle Testfaelle
 
 - Federation of Sol flagship: `Genesis`
 - Argent Flight flagship: `Quetzecoatl`
 - Crimson Rebellion flagship: `Quietus`
+- Faction roster grouped by source: `base_game`, `pok`, `thunders_edge`
 
-Jeder Test erwartet aktuell diese JSON-Felder:
+Die Flagship-Tests erwarten aktuell diese JSON-Felder:
 
 - `faction`
 - `expansion`
@@ -68,11 +95,11 @@ Jeder Test erwartet aktuell diese JSON-Felder:
 - `sustain_damage`
 - `ability`
 
-## Quellenbasis
+Der Roster-Test erwartet diese JSON-Felder:
 
-- Sol: Base Game Referenz aus unserem Benchmark-Setup
-- Argent Flight: [argent.tex](https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/argent.tex)
-- Crimson Rebellion: [crimson.tex](https://raw.githubusercontent.com/LemonSorcerer/TI4_faction_reference/master/factions/crimson.tex)
+- `base_game`
+- `pok`
+- `thunders_edge`
 
 ## Ergebnisse Und Cache
 

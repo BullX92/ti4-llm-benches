@@ -8,6 +8,9 @@
     "bench:models": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest eval --config promptfooconfig.models.yaml --env-file .env --output results.models.json",
     "view": "set \"PROMPTFOO_CONFIG_DIR=.promptfoo\" && npx --yes promptfoo@latest view --no",
     "report": "node generate-report.mjs",
-    "report:open": "node generate-report.mjs && start report.html"
+    "report:reasoning": "node generate-report.mjs results.reasoning.json report.reasoning.html",
+    "report:models": "node generate-report.mjs results.models.json report.models.html",
+    "report:site": "node generate-site.mjs",
+    "report:open": "node generate-site.mjs && start benchmark-site.html"
   }
 }

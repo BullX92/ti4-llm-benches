@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TI4 Benchmark Site</title>
+  <style>
+    :root {
+      --bg: #09111d;
+      --panel: rgba(18, 26, 44, 0.9);
+      --panel-strong: #17233a;
+      --text: #eef3fb;
+      --muted: #95a3bf;
+      --accent: #7dc8ff;
+      --accent-2: #7ef0c6;
+      --border: rgba(125, 200, 255, 0.16);
+      --track: #24334f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 10% -10%, rgba(126, 240, 198, 0.18), transparent 60%),
+        radial-gradient(900px 700px at 100% 0%, rgba(125, 200, 255, 0.2), transparent 60%),
+        linear-gradient(180deg, #0a1220 0%, var(--bg) 100%);
+    }
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 40px 20px 72px;
+    }
+    header {
+      margin-bottom: 28px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(32px, 5vw, 52px);
+      letter-spacing: -0.03em;
+    }
+    header p {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(16px);
+      margin-bottom: 22px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .panel-head h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .meta {
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+    .meta a, .cta a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(23, 35, 58, 0.95), rgba(14, 21, 36, 0.92));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+    }
+    .bar {
+      height: 8px;
+      background: var(--track);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: inherit;
+    }
+    dl {
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    dl div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+    dt {
+      color: var(--muted);
+    }
+    dd {
+      margin: 0;
+      text-align: right;
+    }
+    .cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--panel-strong);
+      color: var(--text);
+    }
+    .button.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #08111c;
+      border: none;
+    }
+    code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      color: var(--accent);
+    }
+    @media (max-width: 860px) {
+      .panel-head {
+        flex-direction: column;
+      }
+      .meta {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>TI4 Benchmark Site</h1>
+      <p>Single entrypoint for the current reasoning and model-comparison runs, including the new Claude Sonnet 5 coverage.</p>
+      <div class="cta">
+        <a class="button primary" href="report.reasoning.html">Reasoning Report</a>
+        <a class="button" href="report.models.html">Models Report</a>
+      </div>
+    </header>
+    
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Reasoning Comparison</h2>
+        <p>OpenAI GPT-5.4 and Claude Sonnet 5 across low, medium, and high reasoning effort.</p>
+      </div>
+      <div class="meta">
+        <span>Lauf: <code>eval-NSL-2026-07-01T19:23:47</code></span>
+        <span>Zeitpunkt: 1.7.2026, 21:23:47</span>
+        <a href="report.reasoning.html">Detailreport öffnen</a>
+      </div>
+    </div>
+    <div class="cards">
+      
+            <article class="card">
+              <h3>claude-sonnet-5</h3>
+              <div class="bar"><span style="width:12%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>4/34 (12%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>1.93 s</dd></div>
+                <div><dt>Tokens</dt><dd>2274</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-5.4 reasoning high</h3>
+              <div class="bar"><span style="width:0%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>0/41 (0%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>446 ms</dd></div>
+                <div><dt>Tokens</dt><dd>30768</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-5.4 reasoning low</h3>
+              <div class="bar"><span style="width:0%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>0/41 (0%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>539 ms</dd></div>
+                <div><dt>Tokens</dt><dd>4747</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-5.4 reasoning medium</h3>
+              <div class="bar"><span style="width:0%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>0/41 (0%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>454 ms</dd></div>
+                <div><dt>Tokens</dt><dd>17516</dd></div>
+              </dl>
+            </article>
+          
+    </div>
+  </section>
+
+    
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Model Comparison</h2>
+        <p>Cross-model benchmark including GPT-4.1, GPT-5.4, and Claude Sonnet 5.</p>
+      </div>
+      <div class="meta">
+        <span>Lauf: <code>eval-oeB-2026-07-01T19:30:02</code></span>
+        <span>Zeitpunkt: 1.7.2026, 21:30:02</span>
+        <a href="report.models.html">Detailreport öffnen</a>
+      </div>
+    </div>
+    <div class="cards">
+      
+            <article class="card">
+              <h3>claude-sonnet-5</h3>
+              <div class="bar"><span style="width:9%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>3/34 (9%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>1.68 s</dd></div>
+                <div><dt>Tokens</dt><dd>2081</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-4.1-mini</h3>
+              <div class="bar"><span style="width:15%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>6/41 (15%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>522 ms</dd></div>
+                <div><dt>Tokens</dt><dd>1065</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-4.1-nano</h3>
+              <div class="bar"><span style="width:15%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>6/41 (15%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>418 ms</dd></div>
+                <div><dt>Tokens</dt><dd>981</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-5.4</h3>
+              <div class="bar"><span style="width:20%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>8/41 (20%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>1.05 s</dd></div>
+                <div><dt>Tokens</dt><dd>1016</dd></div>
+              </dl>
+            </article>
+          
+            <article class="card">
+              <h3>gpt-5.4-mini</h3>
+              <div class="bar"><span style="width:17%"></span></div>
+              <dl>
+                <div><dt>Tests</dt><dd>0/4</dd></div>
+                <div><dt>Assertions</dt><dd>7/41 (17%)</dd></div>
+                <div><dt>Ø Latenz</dt><dd>465 ms</dd></div>
+                <div><dt>Tokens</dt><dd>895</dd></div>
+              </dl>
+            </article>
+          
+    </div>
+  </section>
+
+  </div>
+</body>
+</html>

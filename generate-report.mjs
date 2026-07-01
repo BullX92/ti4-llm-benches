@@ -12,6 +12,19 @@ const inputFileLabel = basename(inputPath);
 
 const raw = JSON.parse(readFileSync(inputPath, 'utf8'));
 
+const parseJsonOutput = (value) => {
+  if (value == null || typeof value !== 'string') return value;
+  const cleaned = value.replace(/^```json\s*|^```\s*|\s*```$/g, '').trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  const candidate = start !== -1 && end !== -1 && end > start ? cleaned.slice(start, end + 1) : cleaned;
+  try {
+    return JSON.parse(candidate);
+  } catch {
+    return value;
+  }
+};
+
 const shortProvider = (id) => String(id).split('/').pop() || id;
 
 // Heuristically map an assertion expression to the schema field it validates.
@@ -39,7 +52,7 @@ const data = {
     cost: r.cost ?? 0,
     tokenUsage: r.tokenUsage ?? null,
     error: r.error ?? null,
-    output: r.response?.output ?? null,
+    output: parseJsonOutput(r.response?.output ?? null),
     components: (r.gradingResult?.componentResults ?? []).map((c) => ({
       pass: !!c.pass,
       value: c.assertion?.value ?? '',
