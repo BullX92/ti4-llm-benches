@@ -27,10 +27,6 @@ providers:
     label: deepseek-v3.2
     config:
       <<: *flagship_config
-  - id: openrouter:qwen/qwen3.7-plus
-    label: qwen3.7-plus
-    config:
-      <<: *flagship_config
   - id: openrouter:mistralai/mistral-small-2603
     label: mistral-small-4
     config:

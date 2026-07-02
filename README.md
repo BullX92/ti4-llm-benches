@@ -62,7 +62,6 @@ Wenn die lokale Promptfoo-Datenbank defekt ist, legt das Script automatisch ein 
   - `anthropic/claude-sonnet-5`
   - `google/gemini-3.5-flash`
   - `deepseek/deepseek-v3.2`
-  - `qwen/qwen3.7-plus`
   - `mistralai/mistral-small-2603`
   - `x-ai/grok-4.20`
   - `deepseek/deepseek-v4-flash`
